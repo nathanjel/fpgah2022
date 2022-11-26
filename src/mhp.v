@@ -126,7 +126,6 @@ localparam  PING_REPLY_1 = 7;
 localparam  PING_REPLY_2 = 8;
 localparam  WAIT_FOR_TCHANGE = 9;
 localparam  WRITE_PORT_1 = 10;
-localparam  WRITE_PORT_2 = 11;
 localparam  WRITE_PORT_21 = 15;
 localparam  WRITE_PORT_3 = 12;
 localparam  PREPARE = 13;
@@ -162,8 +161,8 @@ always @(posedge i_clk) begin
         8'b00110100: mem_write_for_set <= 8'h00;
         8'b00110101: mem_write_for_set <= 8'h00;
         8'b00110110: mem_write_for_set <= 8'h83;
-        8'b00110111: mem_write_for_set <= 8'h09;
-        8'b00111000: mem_write_for_set <= 8'h05;
+        8'b00110111: mem_write_for_set <= 8'h05;
+        8'b00111000: mem_write_for_set <= 8'h09;
         8'b00111001: data_set_complete <= 1;
       endcase
       case (set_control_state)
@@ -277,7 +276,7 @@ always @(posedge i_clk) begin
           case (command)
             COMMAND_REQ_ADDR: begin
               eth_frame_load_addr <= 0;
-              eth_frame_send_addr <= 10'h09;
+              eth_frame_send_addr <= 8'h09;
               state <= WRITE_PORT_1;
               command <= 0;
             end
