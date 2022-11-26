@@ -8,7 +8,11 @@ module task_manager(
   output          o_rreq,
   output  [7:0]   o_wdata,
   input           i_wready,
-  output          o_wvalid
+  output          o_wvalid,
+
+  output          o_wvalid_u,
+  output  [7:0]   o_wdata_u
+
 );
 
 //  fsm - add task control here
@@ -66,7 +70,11 @@ mhp protocol(
   .o_rreq   (o_rreq),
   .o_wdata  (o_wdata),
   .i_wready (i_wready),
-  .o_wvalid (o_wvalid)
+  .o_wvalid (o_wvalid),
+
+  .o_wvalid_u (o_wvalid_u),
+  .o_wdata_u  (o_wdata_u)
+
 );
 
 assign  o_link  = link;

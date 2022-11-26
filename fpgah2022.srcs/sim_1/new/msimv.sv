@@ -92,6 +92,7 @@ initial begin
     i_eth_wready <= 1;
     #100    
     for (int i = 0; i < 46; i++) begin
+      i_eth_rdata <= i;
       i_eth_rready <= 1;
       @(posedge o_eth_rreq);
       i_eth_rready <= 0;

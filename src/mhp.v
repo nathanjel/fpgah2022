@@ -12,7 +12,10 @@ module mhp(
   output          o_rreq,
   output  [7:0]   o_wdata,
   input           i_wready,
-  output          o_wvalid 
+  output          o_wvalid,
+  // uart data
+  output          o_wvalid_u,
+  output  [7:0]   o_wdata_u
 );
 
 //////////////////////////
@@ -47,6 +50,8 @@ reg           r_req     = 0;
 reg   [7:0]   w_data    = 0;
 reg           w_valid   = 0;
 
+reg   [7:0]   w_data_u    = 0;
+reg           w_valid_u   = 0;
 
 
 // frame counter 
@@ -126,6 +131,7 @@ always @(posedge i_clk) begin
         load_addr = 0;
         w_data  <= 0;
         w_valid <= 0;
+        w_valid_u <= 0;
         eth_frame_load_addr <= 0;
         if (i_rready) begin // received frame's payload ready
           r_req   <= 1;     // r_req set before read state, so we can expect valid data in READ state
@@ -134,43 +140,60 @@ always @(posedge i_clk) begin
           r_req   <= 0;
       end
       READ: begin
-        eth_payload_frame_ram[eth_frame_load_addr] <= i_rdata;
-        r_req <= 0; // complete fifo
-        state <= READA; // continue reading
-      end
-      READA: begin
-        if (i_rready) begin
-          eth_frame_load_addr <= eth_frame_load_addr + 1;
-          state <= READ;
-          r_req <= 1;
-        end else
-          if (eth_frame_load_addr == (ETH_FRAME_PAYLOAD_MINIMAL_SIZE-1))
-            state <= READCOMPLETE;
-      end
-      READCOMPLETE: begin
-        state <= IDLE;
-        if (done == 0) begin
-          // done <= 1;
-          state <= PING_REPLY_1;
-          eth_frame_load_addr = 0;
-        end
-      end
-      PING_REPLY_1: begin
-        w_data <= 0;
-        if (i_wready) begin
-          w_valid <= 1;
-          state <= PING_REPLY_2;
-        end
-      end
-      PING_REPLY_2: begin
-        w_valid <= 0;
-        if (eth_frame_load_addr != (ETH_FRAME_PAYLOAD_MINIMAL_SIZE-1)) begin
-          eth_frame_load_addr <= eth_frame_load_addr + 1;
-          state <= PING_REPLY_1;
+        if (i_rready) begin // clear fifo
+          r_req   <= 1;
         end else begin
-          state <= IDLE;
+          w_data_u <= i_rdata;
+          r_req   <= 0;
+          done    <= 1;
+          state   <= WRITE;  
         end
       end
+      WRITE: begin    //  write data
+        if (i_wready) begin
+          w_valid_u <= 1;
+          w_valid <= 1;
+          state   <= IDLE;
+        end
+      end
+      // READ: begin
+      //   eth_payload_frame_ram[eth_frame_load_addr] <= i_rdata;
+      //   r_req <= 0; // complete fifo
+      //   state <= READA; // continue reading
+      // end
+      // READA: begin
+      //   if (i_rready) begin
+      //     eth_frame_load_addr <= eth_frame_load_addr + 1;
+      //     state <= READ;
+      //     r_req <= 1;
+      //   end else
+      //     if (eth_frame_load_addr == (ETH_FRAME_PAYLOAD_MINIMAL_SIZE-1))
+      //       state <= READCOMPLETE;
+      // end
+      // READCOMPLETE: begin
+      //   state <= IDLE;
+      //   if (done == 0) begin
+      //     // done <= 1;
+      //     state <= PING_REPLY_1;
+      //     eth_frame_load_addr = 0;
+      //   end
+      // end
+      // PING_REPLY_1: begin
+      //   w_data <= 0;
+      //   if (i_wready) begin
+      //     w_valid <= 1;
+      //     state <= PING_REPLY_2;
+      //   end
+      // end
+      // PING_REPLY_2: begin
+      //   w_valid <= 0;
+      //   if (eth_frame_load_addr != (ETH_FRAME_PAYLOAD_MINIMAL_SIZE-1)) begin
+      //     eth_frame_load_addr <= eth_frame_load_addr + 1;
+      //     state <= PING_REPLY_1;
+      //   end else begin
+      //     state <= IDLE;
+      //   end
+      // end
     endcase
   end
 end
@@ -179,6 +202,9 @@ assign    o_done   = done;
 assign    o_rreq   = r_req;
 assign    o_wdata  = w_data;
 assign    o_wvalid = w_valid;
+
+assign    o_wdata_u  = w_data_u;
+assign    o_wvalid_u = w_valid_u;
 
 assign    p_direction = p_d_type[7];
 assign    p_type = p_d_type[6:0];

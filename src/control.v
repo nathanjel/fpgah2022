@@ -32,21 +32,24 @@ task_manager task_manager(
   .o_rreq   (o_eth_rreq),
   .o_wdata  (o_eth_wdata),
   .i_wready (i_eth_wready),
-  .o_wvalid (o_eth_wvalid)
+  .o_wvalid (o_eth_wvalid),
+
+  .o_wdata_u  (o_uart_wdata),
+  .o_wvalid_u (o_uart_wvalid)
 );
 
-debug_port debug_port(
-  //  sys
-  .i_clk    (i_clk),
-  .i_rst    (i_rst),
-  //  uart rx
-  .i_rdata  (i_uart_rdata),
-  .i_rready (i_uart_rready),
-  .o_rreq   (o_uart_rreq),
-  //  uart tx
-  .i_wready (1),
-  .o_wdata  (o_uart_wdata),
-  .o_wvalid (o_uart_wvalid)
-);
+// debug_port debug_port(
+//   //  sys
+//   .i_clk    (i_clk),
+//   .i_rst    (i_rst),
+//   //  uart rx
+//   .i_rdata  (i_uart_rdata),
+//   .i_rready (i_uart_rready),
+//   .o_rreq   (o_uart_rreq),
+//   //  uart tx
+//   .i_wready (1),
+//   .o_wdata  (o_uart_wdata),
+//   .o_wvalid (o_uart_wvalid)
+// );
 
 endmodule
