@@ -295,12 +295,12 @@ always @(posedge i_clk) begin
         if (eth_frame_send_addr != eth_frame_load_addr) begin
           state <= PING_REPLY_1;
         end else begin
-          eth_frame_send_addr <= r_counter_clock[29:20]; // [29:20];  // [17:8]
+          eth_frame_send_addr <= r_time[7:0]; // [29:20];  // [17:8]
           state <= WAIT_FOR_TCHANGE;
         end
       end
       WAIT_FOR_TCHANGE: begin
-        if (eth_frame_send_addr != r_counter_clock[29:20]) begin // [29:20]) begin // [17:8]
+        if (eth_frame_send_addr != r_time[7:0]) begin // [29:20]) begin // [17:8]
           done <= 1;
           state <= PREPARE;
           command <= COMMAND_REQ_ADDR;
