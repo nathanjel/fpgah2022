@@ -26,6 +26,7 @@ module msim;
 logic         clk_50 = 0;
 logic         clk_phy = 1;
 logic         o_link;
+logic         reset;
 
 logic   [7:0]   i_eth_rdata;
 logic           i_eth_rready;
@@ -49,6 +50,7 @@ control dcontrol(
   //  sys
   .i_clk(clk_50),
   .o_link(o_link),
+  .i_rst        (reset),
   //  eth
   
   .i_eth_rdata(i_eth_rdata),
@@ -70,7 +72,6 @@ control dcontrol(
 );
 
 initial
-
   forever
     #10 clk_50 = ~clk_50;
 
@@ -81,24 +82,23 @@ initial begin
 end
 
 initial begin
+    // reset
+    reset <= 1;
+    #100
+    reset <= 0;
+    // send initial welcome package  
     i_eth_rdata <= 8'b0;
     i_eth_rready <= 0;
     i_eth_wready <= 1;
-    #100
-    i_eth_rdata <= 8'b00001111;
-    i_eth_rready <= 1;
-    @(posedge o_eth_rreq);
-    i_eth_rready <= 0;
-    #100
-    i_eth_rdata <= 8'b00001111;
-    i_eth_rready <= 1;
-    @(posedge o_eth_rreq);
-    i_eth_rready <= 0;
-    #100
-    i_eth_rdata <= 8'b00001111;
-    i_eth_rready <= 1;
-    @(posedge o_eth_rreq);
-    i_eth_rready <= 0;
+    #100    
+    for (int i = 0; i < 46; i++) begin
+      i_eth_rready <= 1;
+      @(posedge o_eth_rreq);
+      i_eth_rready <= 0;
+      #100 i_eth_rready <= 0;
+    end
+    #1000 i_eth_rready <= 0;
+    // wait for address
 end
 
 

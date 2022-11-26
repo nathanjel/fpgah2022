@@ -15,6 +15,29 @@ module mhp(
   output          o_wvalid 
 );
 
+//////////////////////////
+////// CLOCK
+//////////////////////////
+reg [31:0]  r_time;
+reg [31:0]  r_counter_clock;
+localparam CLOCK_DIVIDER = 50000000;
+
+always @(posedge i_clk) begin
+  if (i_rst) begin
+    r_time           <= 0;
+    r_counter_clock  <= 0;
+  end
+  else begin
+    if (r_counter_clock == CLOCK_DIVIDER) begin
+      r_counter_clock <= 0;
+      r_time <= r_time + 1;
+    end else 
+      r_counter_clock <= r_counter_clock + 1;
+  end
+end
+//////////////////////////
+////// CLOCK
+//////////////////////////
 
 //  local regs
 reg           done      = 0;
@@ -24,11 +47,7 @@ reg           r_req     = 0;
 reg   [7:0]   w_data    = 0;
 reg           w_valid   = 0;
 
-//  fsm
-reg   [3:0] state       = 0;
-localparam  IDLE        = 0;
-localparam  READ        = 1;
-localparam  WRITE       = 2;
+
 
 // frame counter 
 // if its size is less than 42 bytes
@@ -46,7 +65,7 @@ wire scs_work_completed;
 reg mem_enable = 1;
 reg mem_ready_for_scs = 0;
 
-bram recram(
+bram record_ram(
   .clock(i_clk),
   .ram_enable(mem_enable),
   .write_enable(mem_write_enable),
@@ -76,6 +95,24 @@ reg   [5:0]   load_addr = 0;
 wire  p_direction;
 wire  [6:0] p_type;
 
+reg [7:0] eth_payload_frame_ram [(2**10)-1:0];
+reg [9:0] eth_frame_load_addr;
+
+//  fsm
+reg   [3:0] state       = 0;
+
+localparam  IDLE        = 0;
+localparam  READ        = 1;
+localparam  READA        = 2;
+localparam  READCOMPLETE  = 3;
+localparam  WRITE       = 4;
+localparam  WRITEA       = 5;
+localparam  WRITECOMPLETE = 6;
+localparam  PING_REPLY_1 = 7;
+localparam  PING_REPLY_2 = 8;
+
+localparam ETH_FRAME_PAYLOAD_MINIMAL_SIZE = 46;
+
 always @(posedge i_clk) begin
   if (i_rst) begin
     done    <= 0;
@@ -89,7 +126,7 @@ always @(posedge i_clk) begin
         load_addr = 0;
         w_data  <= 0;
         w_valid <= 0;
-        done    <= 0;
+        eth_frame_load_addr <= 0;
         if (i_rready) begin // received frame's payload ready
           r_req   <= 1;     // r_req set before read state, so we can expect valid data in READ state
           state   <= READ;
@@ -97,18 +134,41 @@ always @(posedge i_clk) begin
           r_req   <= 0;
       end
       READ: begin
-        if (i_rready) // clear fifo
-          r_req   <= 1;
-        else begin
-          r_req   <= 0;
-          done    <= 1;
-          state   <= WRITE;
+        eth_payload_frame_ram[eth_frame_load_addr] <= i_rdata;
+        r_req <= 0; // complete fifo
+        state <= READA; // continue reading
+      end
+      READA: begin
+        if (i_rready) begin
+          eth_frame_load_addr <= eth_frame_load_addr + 1;
+          state <= READ;
+          r_req <= 1;
+        end else
+          if (eth_frame_load_addr == (ETH_FRAME_PAYLOAD_MINIMAL_SIZE-1))
+            state <= READCOMPLETE;
+      end
+      READCOMPLETE: begin
+        state <= IDLE;
+        if (done == 0) begin
+          done <= 1;
+          state <= PING_REPLY_1;
+          eth_frame_load_addr = 0;
         end
       end
-      WRITE: begin    //  write data
+      PING_REPLY_1: begin
+        w_data <= 0;
         if (i_wready) begin
           w_valid <= 1;
-          state   <=  IDLE;
+          state <= PING_REPLY_2;
+        end
+      end
+      PING_REPLY_2: begin
+        w_valid <= 0;
+        if (eth_frame_load_addr != (ETH_FRAME_PAYLOAD_MINIMAL_SIZE-1)) begin
+          eth_frame_load_addr <= eth_frame_load_addr + 1;
+          state <= PING_REPLY_1;
+        end else begin
+          state <= IDLE;
         end
       end
     endcase

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="msim_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="msim" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="5,389.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="6,213.501 ns"></ZoomEndTime>
+      <Cursor1Time time="5,789.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="469"></NameColumnWidth>
+      <ValueColumnWidth column_width="224"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="17" />
+   <wvobject fp_name="/msim/clk_50" type="logic">
+      <obj_property name="ElementShortName">clk_50</obj_property>
+      <obj_property name="ObjectShortName">clk_50</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/clk_phy" type="logic">
+      <obj_property name="ElementShortName">clk_phy</obj_property>
+      <obj_property name="ObjectShortName">clk_phy</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/o_link" type="logic">
+      <obj_property name="ElementShortName">o_link</obj_property>
+      <obj_property name="ObjectShortName">o_link</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/reset" type="logic">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/i_eth_rdata" type="array">
+      <obj_property name="ElementShortName">i_eth_rdata[7:0]</obj_property>
+      <obj_property name="ObjectShortName">i_eth_rdata[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/i_eth_rready" type="logic">
+      <obj_property name="ElementShortName">i_eth_rready</obj_property>
+      <obj_property name="ObjectShortName">i_eth_rready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/o_eth_rreq" type="logic">
+      <obj_property name="ElementShortName">o_eth_rreq</obj_property>
+      <obj_property name="ObjectShortName">o_eth_rreq</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/o_eth_wdata" type="array">
+      <obj_property name="ElementShortName">o_eth_wdata[7:0]</obj_property>
+      <obj_property name="ObjectShortName">o_eth_wdata[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/i_eth_wready" type="logic">
+      <obj_property name="ElementShortName">i_eth_wready</obj_property>
+      <obj_property name="ObjectShortName">i_eth_wready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/o_eth_wvalid" type="logic">
+      <obj_property name="ElementShortName">o_eth_wvalid</obj_property>
+      <obj_property name="ObjectShortName">o_eth_wvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/i_uart_rdata" type="array">
+      <obj_property name="ElementShortName">i_uart_rdata[7:0]</obj_property>
+      <obj_property name="ObjectShortName">i_uart_rdata[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/i_uart_rready" type="logic">
+      <obj_property name="ElementShortName">i_uart_rready</obj_property>
+      <obj_property name="ObjectShortName">i_uart_rready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/o_uart_rreq" type="logic">
+      <obj_property name="ElementShortName">o_uart_rreq</obj_property>
+      <obj_property name="ObjectShortName">o_uart_rreq</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/o_uart_wdata" type="array">
+      <obj_property name="ElementShortName">o_uart_wdata[7:0]</obj_property>
+      <obj_property name="ObjectShortName">o_uart_wdata[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/i_uart_wready" type="logic">
+      <obj_property name="ElementShortName">i_uart_wready</obj_property>
+      <obj_property name="ObjectShortName">i_uart_wready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/o_uart_wvalid" type="logic">
+      <obj_property name="ElementShortName">o_uart_wvalid</obj_property>
+      <obj_property name="ObjectShortName">o_uart_wvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/state" type="array">
+      <obj_property name="ElementShortName">state[3:0]</obj_property>
+      <obj_property name="ObjectShortName">state[3:0]</obj_property>
+   </wvobject>
+</wave_config>
