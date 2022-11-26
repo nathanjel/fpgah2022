@@ -43,15 +43,15 @@ end
 //////////////////////////
 
 //  local regs
-reg           done      = 0;
+reg           done;
 //  read regs
-reg           r_req     = 0;
+reg           r_req;
 //  write regs
-reg   [7:0]   w_data    = 0;
-reg           w_valid   = 0;
+reg   [7:0]   w_data;
+reg           w_valid;
 
-wire  [7:0]   w_data_u    = 0;
-wire          w_valid_u   = 0;
+wire  [7:0]   w_data_u;
+wire          w_valid_u;
 
 
 // frame counter 
@@ -96,12 +96,12 @@ scs cscalc(
   .mem_input(mem_write_for_scs)
 );
 
-reg   [15:0]  p_dst_addr = 16'hffff;
-reg   [15:0]  p_src_addr = 16'h0000;
-reg   [15:0]  p_size = 0;
-reg   [7:0]   p_d_type = 0;
-reg   [15:0]  p_scs = 0;
-reg   [5:0]   load_addr = 0;
+reg   [15:0]  p_dst_addr;
+reg   [15:0]  p_src_addr;
+reg   [15:0]  p_size;
+reg   [7:0]   p_d_type;
+reg   [15:0]  p_scs;
+reg   [5:0]   load_addr;
 
 wire  p_direction;
 wire  [6:0] p_type;
