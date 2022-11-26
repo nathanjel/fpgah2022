@@ -318,7 +318,7 @@ always @(posedge i_clk) begin
         state <= WRITE_PORT_21;
       end
       WRITE_PORT_21: begin
-        if (eth_frame_load_addr < eth_frame_send_addr)
+        if (eth_frame_load_addr <= eth_frame_send_addr)
           w_data <= mem_read;
         else
           w_data <= 0;
