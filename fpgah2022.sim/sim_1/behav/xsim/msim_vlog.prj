@@ -1,8 +1,10 @@
 # compile verilog/system verilog design source files
 verilog xil_defaultlib  \
+"../../../../src/bram.v" \
 "../../../../src/control.v" \
 "../../../../src/debug_port.v" \
 "../../../../src/mhp.v" \
+"../../../../src/scs.v" \
 "../../../../src/task_manager.v" \
 
 sv xil_defaultlib  \

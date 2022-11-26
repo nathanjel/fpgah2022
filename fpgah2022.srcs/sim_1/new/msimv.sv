@@ -87,17 +87,17 @@ initial begin
     #100
     i_eth_rdata <= 8'b00001111;
     i_eth_rready <= 1;
-    #100
+    @(posedge o_eth_rreq);
     i_eth_rready <= 0;
     #100
     i_eth_rdata <= 8'b00001111;
     i_eth_rready <= 1;
-    #100
+    @(posedge o_eth_rreq);
     i_eth_rready <= 0;
     #100
     i_eth_rdata <= 8'b00001111;
     i_eth_rready <= 1;
-    #100
+    @(posedge o_eth_rreq);
     i_eth_rready <= 0;
 end
 
