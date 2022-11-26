@@ -96,8 +96,9 @@ mac_wrapper mac_wrapper(
   .i_tx_valid   (eth_tx_valid)
 );
 
+// 0E:2B:69:E2:67:1E
 defparam 
-  mac_wrapper.BOARD_MAC = {8'h00, 8'h00, 8'h00, 8'h00, 8'h00, 8'h00} // place your assigned MAC address here :)
+  mac_wrapper.BOARD_MAC = {8'h0e, 8'h2b, 8'h69, 8'he2, 8'h67, 8'h1e};
 
 control main(
   //  sys
