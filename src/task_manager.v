@@ -47,7 +47,7 @@ always @(posedge i_clk) begin
           send  <= 1;
           state <= CONNECTED;
         end else
-          link <= 1; // change to 1 to enable MHP protocol ethertype usage
+          link <= 0; // change to 1 to enable MHP protocol ethertype usage
       end
     endcase
   end
