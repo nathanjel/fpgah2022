@@ -50,8 +50,8 @@ reg           r_req     = 0;
 reg   [7:0]   w_data    = 0;
 reg           w_valid   = 0;
 
-reg   [7:0]   w_data_u    = 0;
-reg           w_valid_u   = 0;
+wire  [7:0]   w_data_u    = 0;
+wire          w_valid_u   = 0;
 
 
 // frame counter 
@@ -73,8 +73,8 @@ wire [7:0] mem_write;
 wire [7:0] mem_read;
 wire scs_work_completed;
 
-reg mem_enable = 1;
-reg mem_ready_for_scs = 0;
+reg mem_enable;
+reg mem_ready_for_scs;
 
 bram record_ram(
   .clock(i_clk),
@@ -107,8 +107,8 @@ wire  p_direction;
 wire  [6:0] p_type;
 
 reg [7:0] eth_payload_frame_ram [(2**10)-1:0];
-reg [9:0] eth_frame_load_addr;
-reg [9:0] eth_frame_send_addr;
+reg [7:0] eth_frame_load_addr;
+reg [7:0] eth_frame_send_addr;
 
 reg [5:0] eth_rec_dead_cnt;
 
@@ -139,12 +139,19 @@ reg   e_enable_data_set;
 reg   data_set_complete;
 
 // writer
+reg [1:0] set_control_state;
+localparam SETCONTROL_RESET = 0;
+localparam SETCONTROL_1 = 1;
+localparam SETCONTROL_2 = 2;
+localparam SETCONTROL_3 = 3;
+
 wire [7:0] set_control_wire;
 assign set_control_wire = {command, mem_address_for_set[3:0]};
 
 always @(posedge i_clk) begin
   if (i_rst) begin
     data_set_complete <= 0;
+    set_control_state <= SETCONTROL_RESET;
   end else begin
     if (e_enable_data_set & ~data_set_complete) begin
       case (set_control_wire)
@@ -152,22 +159,39 @@ always @(posedge i_clk) begin
         8'b00110001: mem_write_for_set <= 8'hff;
         8'b00110010: mem_write_for_set <= 8'h00;
         8'b00110011: mem_write_for_set <= 8'h00;
-        8'b00110100: mem_write_for_set <= 8'h83;
-        8'b00110101: mem_write_for_set <= 8'h08;
-        8'b00110110: mem_write_for_set <= 8'h05;
-        8'b00110111: data_set_complete <= 1;
+        8'b00110100: mem_write_for_set <= 8'h00;
+        8'b00110101: mem_write_for_set <= 8'h00;
+        8'b00110110: mem_write_for_set <= 8'h83;
+        8'b00110111: mem_write_for_set <= 8'h09;
+        8'b00111000: mem_write_for_set <= 8'h05;
+        8'b00111001: data_set_complete <= 1;
       endcase
-      if (mem_write_enable_for_set) begin
-        mem_write_enable_for_set <= 0;
-        mem_address_for_set <= mem_address_for_set + 1;
-      end else begin
-        mem_write_enable_for_set <= 1;
-      end      
+      case (set_control_state)
+        SETCONTROL_RESET: begin
+          if(e_enable_data_set) begin
+            set_control_state <= SETCONTROL_1;  
+          end
+        end
+        SETCONTROL_1: begin
+          mem_write_enable_for_set <= 0;
+          set_control_state <= SETCONTROL_2;
+        end
+        SETCONTROL_2: begin
+          mem_write_enable_for_set <= 1;
+          set_control_state <= SETCONTROL_3;
+        end
+        SETCONTROL_3: begin
+          mem_write_enable_for_set <= 0;
+          mem_address_for_set <= mem_address_for_set + 1;
+          set_control_state <= SETCONTROL_1;
+        end
+      endcase
     end else begin
       mem_write_enable_for_set <= 0;
       mem_address_for_set <= 0;
       mem_write_for_set <= 0;
       data_set_complete <= 0;
+      set_control_state <= SETCONTROL_RESET;
     end
   end
 end
@@ -186,12 +210,13 @@ always @(posedge i_clk) begin
         load_addr = 0;
         w_data  <= 0;
         w_valid <= 0;
-        w_valid_u <= 0;
         e_enable_data_set <= 0;
         mem_address_for_send <= 0;
         eth_frame_load_addr <= 0;
         eth_frame_send_addr <= 0;
         eth_rec_dead_cnt <= 0;
+        mem_enable <= 1;
+        mem_ready_for_scs <= 0;
         if (i_rready) begin // received frame's payload ready
           r_req   <= 1;     // r_req set before read state, so we can expect valid data in READ state
           state   <= READ;
@@ -248,67 +273,53 @@ always @(posedge i_clk) begin
         end
       end
       PROCESSING: begin
-          w_valid_u <= 0;
           e_enable_data_set <= 0;
           case (command)
             COMMAND_REQ_ADDR: begin
               eth_frame_load_addr <= 0;
-              eth_frame_send_addr <= 10'h07;
+              eth_frame_send_addr <= 10'h09;
               state <= WRITE_PORT_1;
               command <= 0;
             end
           endcase
       end
       PING_REPLY_1: begin
-        w_data_u <= 8'h40;
         w_data <= 0;
         if (i_wready) begin
           w_valid <= 1;
-          w_valid_u <= 1;  
           state <= PING_REPLY_2;
           eth_frame_send_addr <= eth_frame_send_addr + 1;
         end
       end
       PING_REPLY_2: begin
         w_valid <= 0;
-        w_valid_u <= 0;
         if (eth_frame_send_addr != eth_frame_load_addr) begin
           state <= PING_REPLY_1;
         end else begin
-          eth_frame_send_addr <= r_counter_clock[17:8]; // [29:20];  // [17:9]
-          w_data_u <= 8'h41;
+          eth_frame_send_addr <= r_counter_clock[29:20]; // [29:20];  // [17:8]
           state <= WAIT_FOR_TCHANGE;
         end
       end
       WAIT_FOR_TCHANGE: begin
-        if (eth_frame_send_addr != r_counter_clock[17:8]) begin // [29:20]) begin // [17:8]
+        if (eth_frame_send_addr != r_counter_clock[29:20]) begin // [29:20]) begin // [17:8]
           done <= 1;
           state <= PREPARE;
           command <= COMMAND_REQ_ADDR;
-          w_valid_u <= 1;
         end
       end
       WRITE_PORT_1: begin
         w_valid <= 0;
-        w_valid_u <= 0;
         mem_address_for_send <= eth_frame_load_addr;
-        state <= WRITE_PORT_2;
-      end 
-      WRITE_PORT_2: begin
-        // w_data <= mem_read;
-        // w_data_u <= mem_read;
-        eth_frame_load_addr <= eth_frame_load_addr + 1;
         state <= WRITE_PORT_21;
-      end
+      end 
       WRITE_PORT_21: begin
-        w_data <= mem_read;
-        w_data_u <= mem_read;
+        eth_frame_load_addr <= eth_frame_load_addr + 1;
         // eth_frame_load_addr <= eth_frame_load_addr + 1;
         state <= WRITE_PORT_3;
       end
       WRITE_PORT_3: begin
+        w_data <= mem_read;
         w_valid <= 1;
-        w_valid_u <= 1;
         if (eth_frame_send_addr == eth_frame_load_addr) begin
           state <= IDLE;
         end else begin
@@ -318,6 +329,9 @@ always @(posedge i_clk) begin
     endcase
   end
 end
+
+assign    w_valid_u = w_valid;
+assign    w_data_u = w_data;
 
 assign    o_done   = done;
 assign    o_rreq   = r_req;
