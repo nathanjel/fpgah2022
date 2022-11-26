@@ -37,7 +37,7 @@ wire [10-1:0] mem_address_for_scs;
 wire mem_write_enable_for_scs;
 wire [7:0] mem_write_for_scs;
 
-wire mem_write_enable = 0;
+wire mem_write_enable;
 wire [10-1:0] mem_address;
 wire [7:0] mem_write;
 wire [7:0] mem_read;
