@@ -161,8 +161,8 @@ always @(posedge i_clk) begin
         8'b00110001: mem_write_for_set <= 8'hff;
         8'b00110010: mem_write_for_set <= 8'h00;
         8'b00110011: mem_write_for_set <= 8'h00;
-        8'b00110100: mem_write_for_set <= 8'h01;
-        8'b00110101: mem_write_for_set <= 8'h00;
+        8'b00110100: mem_write_for_set <= 8'h00;
+        8'b00110101: mem_write_for_set <= 8'h01;
         8'b00110110: mem_write_for_set <= 8'h83;
         8'b00110111: mem_write_for_set <= 8'h00;
         8'b00111001: mem_write_for_set <= 8'h00;
