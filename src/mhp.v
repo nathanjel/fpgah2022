@@ -146,9 +146,11 @@ localparam SETCONTROL_3 = 3;
 
 wire [7:0] set_control_wire;
 assign set_control_wire = {command, mem_address_for_set[3:0]};
+reg [7:0] mem_writes_counter;
 
 always @(posedge i_clk) begin
   if (i_rst) begin
+    mem_writes_counter <= 0;
     data_set_complete <= 0;
     set_control_state <= SETCONTROL_RESET;
   end else begin
@@ -161,9 +163,12 @@ always @(posedge i_clk) begin
         8'b00110100: mem_write_for_set <= 8'h00;
         8'b00110101: mem_write_for_set <= 8'h00;
         8'b00110110: mem_write_for_set <= 8'h83;
-        8'b00110111: mem_write_for_set <= 8'h05;
-        8'b00111000: mem_write_for_set <= 8'h09;
-        8'b00111001: data_set_complete <= 1;
+        8'b00110111: mem_write_for_set <= 8'h09;
+        8'b00111000: mem_write_for_set <= 8'h05;
+        8'b00111001: begin
+          data_set_complete <= 1;
+          mem_writes_counter <= mem_address_for_set;
+        end
       endcase
       case (set_control_state)
         SETCONTROL_RESET: begin
@@ -207,7 +212,6 @@ always @(posedge i_clk) begin
     case (state)
       IDLE: begin
         load_addr = 0;
-        w_data  <= 0;
         w_valid <= 0;
         e_enable_data_set <= 0;
         mem_address_for_send <= 0;
@@ -273,14 +277,10 @@ always @(posedge i_clk) begin
       end
       PROCESSING: begin
           e_enable_data_set <= 0;
-          case (command)
-            COMMAND_REQ_ADDR: begin
-              eth_frame_load_addr <= 0;
-              eth_frame_send_addr <= 8'h09;
-              state <= WRITE_PORT_1;
-              command <= 0;
-            end
-          endcase
+          eth_frame_load_addr <= 0;
+          eth_frame_send_addr <= mem_writes_counter;
+          state <= WRITE_PORT_1;
+          command <= 0;
       end
       PING_REPLY_1: begin
         w_data <= 0;
