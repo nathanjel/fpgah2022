@@ -1,5 +1,3 @@
-INFO: [VRFC 10-2263] Analyzing Verilog file "F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/bram.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module bram
 INFO: [VRFC 10-2263] Analyzing Verilog file "F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/control.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module control
 INFO: [VRFC 10-2263] Analyzing Verilog file "F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/mhp.v" into library xil_defaultlib
