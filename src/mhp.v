@@ -102,6 +102,9 @@ wire  [6:0] p_type;
 
 reg [7:0] eth_payload_frame_ram [(2**10)-1:0];
 reg [9:0] eth_frame_load_addr;
+reg [9:0] eth_frame_send_addr;
+
+reg [5:0] eth_rec_dead_cnt;
 
 //  fsm
 reg   [3:0] state       = 0;
@@ -133,67 +136,75 @@ always @(posedge i_clk) begin
         w_valid <= 0;
         w_valid_u <= 0;
         eth_frame_load_addr <= 0;
+        eth_frame_send_addr <= 0;
+        eth_rec_dead_cnt <= 0;
         if (i_rready) begin // received frame's payload ready
           r_req   <= 1;     // r_req set before read state, so we can expect valid data in READ state
           state   <= READ;
         end else
           r_req   <= 0;
       end
-      READ: begin
-        if (i_rready) begin // clear fifo
-          r_req   <= 1;
-        end else begin
-          w_data_u <= i_rdata;
-          r_req   <= 0;
-          done    <= 1;
-          state   <= WRITE;  
-        end
-      end
-      WRITE: begin    //  write data
-        if (i_wready) begin
-          w_valid_u <= 1;
-          w_valid <= 1;
-          state   <= IDLE;
-        end
-      end
       // READ: begin
-      //   eth_payload_frame_ram[eth_frame_load_addr] <= i_rdata;
-      //   r_req <= 0; // complete fifo
-      //   state <= READA; // continue reading
-      // end
-      // READA: begin
-      //   if (i_rready) begin
-      //     eth_frame_load_addr <= eth_frame_load_addr + 1;
-      //     state <= READ;
-      //     r_req <= 1;
-      //   end else
-      //     if (eth_frame_load_addr == (ETH_FRAME_PAYLOAD_MINIMAL_SIZE-1))
-      //       state <= READCOMPLETE;
-      // end
-      // READCOMPLETE: begin
-      //   state <= IDLE;
-      //   if (done == 0) begin
-      //     // done <= 1;
-      //     state <= PING_REPLY_1;
-      //     eth_frame_load_addr = 0;
-      //   end
-      // end
-      // PING_REPLY_1: begin
-      //   w_data <= 0;
-      //   if (i_wready) begin
-      //     w_valid <= 1;
-      //     state <= PING_REPLY_2;
-      //   end
-      // end
-      // PING_REPLY_2: begin
-      //   w_valid <= 0;
-      //   if (eth_frame_load_addr != (ETH_FRAME_PAYLOAD_MINIMAL_SIZE-1)) begin
-      //     eth_frame_load_addr <= eth_frame_load_addr + 1;
-      //     state <= PING_REPLY_1;
+      //   if (i_rready) begin // clear fifo
+      //     r_req   <= 1;
       //   end else begin
-      //     state <= IDLE;
+      //     w_data_u <= i_rdata;
+      //     r_req   <= 0;
+      //     done    <= 1;
+      //     state   <= WRITE;  
       //   end
       // end
+      // WRITE: begin    //  write data
+      //   if (i_wready) begin
+      //     w_valid_u <= 1;
+      //     w_valid <= 1;
+      //     state   <= IDLE;
+      //   end
+      // end
+      READ: begin
+        eth_payload_frame_ram[eth_frame_load_addr] <= i_rdata;
+        eth_frame_load_addr <= eth_frame_load_addr + 1;
+        r_req <= 0; // complete fifo
+        state <= READA; // continue reading
+        eth_rec_dead_cnt <= 0;
+      end
+      READA: begin
+        if (i_rready) begin
+          state <= READ;
+          r_req <= 1;
+        end else begin
+          eth_rec_dead_cnt <= eth_rec_dead_cnt + 1;
+          if (eth_rec_dead_cnt == 6'b000011)
+            state <= READCOMPLETE;
+        end  
+      end
+      READCOMPLETE: begin
+        state <= IDLE;
+        if (done == 0) begin
+          // done <= 1;
+          state <= PING_REPLY_1;
+          eth_frame_send_addr = 0;
+        end
+      end
+      PING_REPLY_1: begin
+        w_data_u <= 8'h40;
+        w_data <= 0;
+        if (i_wready) begin
+          w_valid <= 1;
+          w_valid_u <= 1;  
+          state <= PING_REPLY_2;
+          eth_frame_send_addr <= eth_frame_send_addr + 1;
+        end
+      end
+      PING_REPLY_2: begin
+        w_valid <= 0;
+        w_valid_u <= 1;
+        if (eth_frame_send_addr != eth_frame_load_addr) begin
+          state <= PING_REPLY_1;
+        end else begin
+          state <= IDLE;
+        end
+      end
     endcase
   end
 end

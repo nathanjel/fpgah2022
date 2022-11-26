@@ -12,12 +12,12 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="851.556 ns"></ZoomEndTime>
-      <Cursor1Time time="1,000.000 ns"></Cursor1Time>
+      <ZoomEndTime time="1,670.001 ns"></ZoomEndTime>
+      <Cursor1Time time="2,000,000.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="469"></NameColumnWidth>
-      <ValueColumnWidth column_width="210"></ValueColumnWidth>
+      <ValueColumnWidth column_width="203"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="19" />
    <wvobject fp_name="/msim/clk_50" type="logic">
@@ -72,18 +72,6 @@
       <obj_property name="ElementShortName">o_uart_rreq</obj_property>
       <obj_property name="ObjectShortName">o_uart_rreq</obj_property>
    </wvobject>
-   <wvobject fp_name="/msim/o_uart_wdata" type="array">
-      <obj_property name="ElementShortName">o_uart_wdata[7:0]</obj_property>
-      <obj_property name="ObjectShortName">o_uart_wdata[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/msim/i_uart_wready" type="logic">
-      <obj_property name="ElementShortName">i_uart_wready</obj_property>
-      <obj_property name="ObjectShortName">i_uart_wready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/msim/o_uart_wvalid" type="logic">
-      <obj_property name="ElementShortName">o_uart_wvalid</obj_property>
-      <obj_property name="ObjectShortName">o_uart_wvalid</obj_property>
-   </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/state" type="array">
       <obj_property name="ElementShortName">state[3:0]</obj_property>
       <obj_property name="ObjectShortName">state[3:0]</obj_property>
@@ -95,5 +83,17 @@
    <wvobject fp_name="/msim/o_uart_wdata" type="array">
       <obj_property name="ElementShortName">o_uart_wdata[7:0]</obj_property>
       <obj_property name="ObjectShortName">o_uart_wdata[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/eth_frame_load_addr" type="array">
+      <obj_property name="ElementShortName">eth_frame_load_addr[9:0]</obj_property>
+      <obj_property name="ObjectShortName">eth_frame_load_addr[9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/eth_frame_send_addr" type="array">
+      <obj_property name="ElementShortName">eth_frame_send_addr[9:0]</obj_property>
+      <obj_property name="ObjectShortName">eth_frame_send_addr[9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/eth_rec_dead_cnt" type="array">
+      <obj_property name="ElementShortName">eth_rec_dead_cnt[5:0]</obj_property>
+      <obj_property name="ObjectShortName">eth_rec_dead_cnt[5:0]</obj_property>
    </wvobject>
 </wave_config>

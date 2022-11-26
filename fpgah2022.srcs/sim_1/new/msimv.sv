@@ -96,7 +96,7 @@ initial begin
       i_eth_rready <= 1;
       @(posedge o_eth_rreq);
       i_eth_rready <= 0;
-      #100 i_eth_rready <= 0;
+      #1000 i_eth_rready <= 0;
     end
     #10000 i_eth_rready <= 0;
     // wait for address
