@@ -55,6 +55,7 @@ module scs
 	      			work_complete <= 0;
 	      			payload_len <= 0;
 	      			state <= READY;
+	      			mem_input <= 0;
 	      		end
 	      		READY: begin
 	      			if (mem_ready)

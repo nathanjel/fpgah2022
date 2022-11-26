@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="48,523.333 ns"></ZoomStartTime>
-      <ZoomEndTime time="51,891.334 ns"></ZoomEndTime>
-      <Cursor1Time time="51,330.000 ns"></Cursor1Time>
+      <ZoomStartTime time="51,199.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="52,918.001 ns"></ZoomEndTime>
+      <Cursor1Time time="51,821.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="469"></NameColumnWidth>
-      <ValueColumnWidth column_width="189"></ValueColumnWidth>
+      <ValueColumnWidth column_width="154"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="20" />
+   <WVObjectSize size="27" />
    <wave_markers>
       <marker time="400000000" label="" />
       <marker time="230000" label="" />
@@ -79,6 +79,7 @@
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/state" type="array">
       <obj_property name="ElementShortName">state[3:0]</obj_property>
       <obj_property name="ObjectShortName">state[3:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/msim/o_uart_wvalid" type="logic">
       <obj_property name="ElementShortName">o_uart_wvalid</obj_property>
@@ -103,5 +104,34 @@
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/eth_rec_dead_cnt" type="array">
       <obj_property name="ElementShortName">eth_rec_dead_cnt[5:0]</obj_property>
       <obj_property name="ObjectShortName">eth_rec_dead_cnt[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/set_control_wire" type="array">
+      <obj_property name="ElementShortName">set_control_wire[7:0]</obj_property>
+      <obj_property name="ObjectShortName">set_control_wire[7:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/e_enable_data_set" type="logic">
+      <obj_property name="ElementShortName">e_enable_data_set</obj_property>
+      <obj_property name="ObjectShortName">e_enable_data_set</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/data_set_complete" type="logic">
+      <obj_property name="ElementShortName">data_set_complete</obj_property>
+      <obj_property name="ObjectShortName">data_set_complete</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/mem_address" type="array">
+      <obj_property name="ElementShortName">mem_address[9:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_address[9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/mem_write" type="array">
+      <obj_property name="ElementShortName">mem_write[7:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_write[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/mem_read" type="array">
+      <obj_property name="ElementShortName">mem_read[7:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_read[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/mem_write_enable" type="logic">
+      <obj_property name="ElementShortName">mem_write_enable</obj_property>
+      <obj_property name="ObjectShortName">mem_write_enable</obj_property>
    </wvobject>
 </wave_config>

@@ -61,6 +61,10 @@ wire [10-1:0] mem_address_for_scs;
 wire mem_write_enable_for_scs;
 wire [7:0] mem_write_for_scs;
 
+reg [10-1:0] mem_address_for_set;
+reg mem_write_enable_for_set;
+reg [7:0] mem_write_for_set;
+
 reg [10-1:0] mem_address_for_send;
 
 wire mem_write_enable;
@@ -123,12 +127,52 @@ localparam  PING_REPLY_2 = 8;
 localparam  WAIT_FOR_TCHANGE = 9;
 localparam  WRITE_PORT_1 = 10;
 localparam  WRITE_PORT_2 = 11;
+localparam  WRITE_PORT_21 = 15;
 localparam  WRITE_PORT_3 = 12;
-localparam  PROCESSING = 13;
+localparam  PREPARE = 13;
+localparam  PROCESSING = 14;
 
 reg   [3:0] command   = 0;
 localparam  COMMAND_REQ_ADDR  = 3; // x03
 
+reg   e_enable_data_set;
+reg   data_set_complete;
+
+// writer
+wire [7:0] set_control_wire;
+assign set_control_wire = {command, mem_address_for_set[3:0]};
+
+always @(posedge i_clk) begin
+  if (i_rst) begin
+    data_set_complete <= 0;
+  end else begin
+    if (e_enable_data_set & ~data_set_complete) begin
+      case (set_control_wire)
+        8'b00110000: mem_write_for_set <= 8'hff;
+        8'b00110001: mem_write_for_set <= 8'hff;
+        8'b00110010: mem_write_for_set <= 8'h00;
+        8'b00110011: mem_write_for_set <= 8'h00;
+        8'b00110100: mem_write_for_set <= 8'h83;
+        8'b00110101: mem_write_for_set <= 8'h08;
+        8'b00110110: mem_write_for_set <= 8'h05;
+        8'b00110111: data_set_complete <= 1;
+      endcase
+      if (mem_write_enable_for_set) begin
+        mem_write_enable_for_set <= 0;
+        mem_address_for_set <= mem_address_for_set + 1;
+      end else begin
+        mem_write_enable_for_set <= 1;
+      end      
+    end else begin
+      mem_write_enable_for_set <= 0;
+      mem_address_for_set <= 0;
+      mem_write_for_set <= 0;
+      data_set_complete <= 0;
+    end
+  end
+end
+
+// machine
 always @(posedge i_clk) begin
   if (i_rst) begin
     done    <= 0;
@@ -143,6 +187,7 @@ always @(posedge i_clk) begin
         w_data  <= 0;
         w_valid <= 0;
         w_valid_u <= 0;
+        e_enable_data_set <= 0;
         mem_address_for_send <= 0;
         eth_frame_load_addr <= 0;
         eth_frame_send_addr <= 0;
@@ -196,8 +241,15 @@ always @(posedge i_clk) begin
           // normal processing
         end
       end
+      PREPARE: begin
+        e_enable_data_set <= 1;
+        if (data_set_complete) begin
+          state <= PROCESSING;
+        end
+      end
       PROCESSING: begin
           w_valid_u <= 0;
+          e_enable_data_set <= 0;
           case (command)
             COMMAND_REQ_ADDR: begin
               eth_frame_load_addr <= 0;
@@ -231,7 +283,7 @@ always @(posedge i_clk) begin
       WAIT_FOR_TCHANGE: begin
         if (eth_frame_send_addr != r_counter_clock[17:8]) begin // [29:20]) begin // [17:8]
           done <= 1;
-          state <= PROCESSING;
+          state <= PREPARE;
           command <= COMMAND_REQ_ADDR;
           w_valid_u <= 1;
         end
@@ -243,9 +295,15 @@ always @(posedge i_clk) begin
         state <= WRITE_PORT_2;
       end 
       WRITE_PORT_2: begin
+        // w_data <= mem_read;
+        // w_data_u <= mem_read;
+        eth_frame_load_addr <= eth_frame_load_addr + 1;
+        state <= WRITE_PORT_21;
+      end
+      WRITE_PORT_21: begin
         w_data <= mem_read;
         w_data_u <= mem_read;
-        eth_frame_load_addr <= eth_frame_load_addr + 1;
+        // eth_frame_load_addr <= eth_frame_load_addr + 1;
         state <= WRITE_PORT_3;
       end
       WRITE_PORT_3: begin
@@ -272,8 +330,8 @@ assign    o_wvalid_u = w_valid_u;
 assign    p_direction = p_d_type[7];
 assign    p_type = p_d_type[6:0];
 
-assign    mem_write_enable = 0 | mem_write_enable_for_scs;
-assign    mem_address = 0 | mem_address_for_scs | mem_address_for_send;
-assign    mem_write = 0 | mem_write_for_scs;
+assign    mem_write_enable = mem_write_enable_for_scs | mem_write_enable_for_set;
+assign    mem_address = mem_address_for_scs | mem_address_for_send | mem_address_for_set;
+assign    mem_write = mem_write_for_scs | mem_write_for_set;
 
 endmodule

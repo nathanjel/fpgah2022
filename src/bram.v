@@ -1,10 +1,10 @@
 module bram
 	#(
 		parameter RAM_WIDTH 		= 8,
-		parameter RAM_ADDR_BITS 	= 10,
-		parameter DATA_FILE 		= "data_file.txt",
-		parameter INIT_START_ADDR 	= 0,
-		parameter INIT_END_ADDR		= 9
+		parameter RAM_ADDR_BITS 	= 10
+		// parameter DATA_FILE 		= "data_file.txt",
+		// parameter INIT_START_ADDR 	= 0,
+		// parameter INIT_END_ADDR		= 9
 	)
 	
 	(
@@ -20,8 +20,8 @@ module bram
 
    //  The forllowing code is only necessary if you wish to initialize the RAM 
    //  contents via an external file (use $readmemb for binary data)
-   initial
-      $readmemh(DATA_FILE, ram_name, INIT_START_ADDR, INIT_END_ADDR);
+   //  initial
+   //    $readmemh(DATA_FILE, ram_name, INIT_START_ADDR, INIT_END_ADDR);
 
    always @(posedge clock)
       if (ram_enable) begin
