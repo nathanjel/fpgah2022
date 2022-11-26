@@ -12,14 +12,18 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="1,670.001 ns"></ZoomEndTime>
-      <Cursor1Time time="2,000,000.000 ns"></Cursor1Time>
+      <ZoomEndTime time="3,354.001 ns"></ZoomEndTime>
+      <Cursor1Time time="990.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="469"></NameColumnWidth>
-      <ValueColumnWidth column_width="203"></ValueColumnWidth>
+      <ValueColumnWidth column_width="196"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="19" />
+   <wave_markers>
+      <marker time="400000000" label="" />
+      <marker time="230000" label="" />
+   </wave_markers>
    <wvobject fp_name="/msim/clk_50" type="logic">
       <obj_property name="ElementShortName">clk_50</obj_property>
       <obj_property name="ObjectShortName">clk_50</obj_property>

@@ -174,7 +174,7 @@ always @(posedge i_clk) begin
           r_req <= 1;
         end else begin
           eth_rec_dead_cnt <= eth_rec_dead_cnt + 1;
-          if (eth_rec_dead_cnt == 6'b000011)
+          if (eth_rec_dead_cnt == 6'b111111)
             state <= READCOMPLETE;
         end  
       end
@@ -184,6 +184,8 @@ always @(posedge i_clk) begin
           // done <= 1;
           state <= PING_REPLY_1;
           eth_frame_send_addr = 0;
+        end else begin
+          // normal processing
         end
       end
       PING_REPLY_1: begin
@@ -198,7 +200,7 @@ always @(posedge i_clk) begin
       end
       PING_REPLY_2: begin
         w_valid <= 0;
-        w_valid_u <= 1;
+        w_valid_u <= 0;
         if (eth_frame_send_addr != eth_frame_load_addr) begin
           state <= PING_REPLY_1;
         end else begin
