@@ -150,7 +150,7 @@ always @(posedge i_clk) begin
       READCOMPLETE: begin
         state <= IDLE;
         if (done == 0) begin
-          done <= 1;
+          // done <= 1;
           state <= PING_REPLY_1;
           eth_frame_load_addr = 0;
         end

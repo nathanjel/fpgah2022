@@ -97,8 +97,14 @@ initial begin
       i_eth_rready <= 0;
       #100 i_eth_rready <= 0;
     end
-    #1000 i_eth_rready <= 0;
+    #10000 i_eth_rready <= 0;
     // wait for address
+    for (int i = 0; i < 46; i++) begin
+      i_eth_rready <= 1;
+      @(posedge o_eth_rreq);
+      i_eth_rready <= 0;
+      #100 i_eth_rready <= 0;
+    end
 end
 
 
