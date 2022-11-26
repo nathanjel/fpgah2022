@@ -126,6 +126,7 @@ localparam  PING_REPLY_1 = 7;
 localparam  PING_REPLY_2 = 8;
 localparam  WAIT_FOR_TCHANGE = 9;
 localparam  WRITE_PORT_1 = 10;
+localparam  WRITE_PORT_2 = 11;
 localparam  WRITE_PORT_21 = 15;
 localparam  WRITE_PORT_3 = 12;
 localparam  PREPARE = 13;
@@ -300,7 +301,7 @@ always @(posedge i_clk) begin
         end
       end
       WAIT_FOR_TCHANGE: begin
-        if (eth_frame_send_addr != r_time[7:0]) begin // [29:20]) begin // [17:8]
+        if (eth_frame_send_addr == r_time[7:0]) begin // [29:20]) begin // [17:8]
           done <= 1;
           state <= PREPARE;
           command <= COMMAND_REQ_ADDR;
@@ -309,17 +310,24 @@ always @(posedge i_clk) begin
       WRITE_PORT_1: begin
         w_valid <= 0;
         mem_address_for_send <= eth_frame_load_addr;
-        state <= WRITE_PORT_21;
+        state <= WRITE_PORT_2;
       end 
-      WRITE_PORT_21: begin
+      WRITE_PORT_2: begin
         eth_frame_load_addr <= eth_frame_load_addr + 1;
+        // eth_frame_load_addr <= eth_frame_load_addr + 1;
+        state <= WRITE_PORT_21;
+      end
+      WRITE_PORT_21: begin
+        if (eth_frame_load_addr < eth_frame_send_addr)
+          w_data <= mem_read;
+        else
+          w_data <= 0;
         // eth_frame_load_addr <= eth_frame_load_addr + 1;
         state <= WRITE_PORT_3;
       end
       WRITE_PORT_3: begin
-        w_data <= mem_read;
         w_valid <= 1;
-        if (eth_frame_send_addr == eth_frame_load_addr) begin
+        if (eth_frame_load_addr == 8'h2f) begin
           state <= IDLE;
         end else begin
           state <= WRITE_PORT_1;
