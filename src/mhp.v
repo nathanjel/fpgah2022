@@ -58,6 +58,7 @@ always @(posedge i_clk) begin
       end
       WRITE: begin    //  write data
         if (i_wready) begin
+          w_data <= i_rdata;
           w_valid <= 1;
           state   <=  IDLE;
         end

@@ -1,0 +1,15 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  \
+"../../../../src/control.v" \
+"../../../../src/debug_port.v" \
+"../../../../src/mhp.v" \
+"../../../../src/task_manager.v" \
+
+sv xil_defaultlib  \
+"../../../../fpgah2022.srcs/sim_1/new/msimv.sv" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

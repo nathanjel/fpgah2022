@@ -1,9 +1,19 @@
 Vivado Simulator v2022.1
 Copyright 1986-1999, 2001-2022 Xilinx, Inc. All Rights Reserved.
-Running: C:/Xilinx/Vivado/2022.1/bin/unwrapped/win64.o/xelab.exe --incr --debug typical --relax --mt 2 -L xil_defaultlib -L uvm -L unisims_ver -L unimacro_ver -L secureip --snapshot tb_top_behav xil_defaultlib.tb_top xil_defaultlib.glbl -log elaborate.log 
+Running: C:/Xilinx/Vivado/2022.1/bin/unwrapped/win64.o/xelab.exe --incr --debug typical --relax --mt 2 -L xil_defaultlib -L uvm -L unisims_ver -L unimacro_ver -L secureip --snapshot msim_behav xil_defaultlib.msim xil_defaultlib.glbl -log elaborate.log 
 Using 2 slave threads.
 Starting static elaboration
 Pass Through NonSizing Optimizer
-ERROR: [VRFC 10-2063] Module <scfifo> not found while processing module instance <scfifo8bx256> [F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/uart_fifo.v:16]
-ERROR: [VRFC 10-2063] Module <dcfifo> not found while processing module instance <dcfifo8bx2048> [F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/eth_fifo.v:18]
-ERROR: [XSIM 43-3322] Static elaboration of top level Verilog design unit(s) in library work failed.
+WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 1 for port 'i_wready' [F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/control.v:47]
+WARNING: [VRFC 10-5021] port 'i_rst' is not connected on this instance [F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/fpgah2022.srcs/sim_1/new/msimv.sv:48]
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.mhp
+Compiling module xil_defaultlib.task_manager
+Compiling module xil_defaultlib.debug_port
+Compiling module xil_defaultlib.control
+Compiling module xil_defaultlib.msim
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot msim_behav
