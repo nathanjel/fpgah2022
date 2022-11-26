@@ -40,18 +40,18 @@ always @(posedge i_clk) begin
         end
       end
       CONNECTED: begin
-        if (done)
+        if (done) begin
           state <= LINKED;
-        else
+          link <= 1;
+        end else
           send  <=  0;
       end
       LINKED: begin
-        if (done) begin
+        if (~done) begin
           link  <= 0;
           send  <= 1;
-          state <= CONNECTED;
-        end else
-          link <= 0; // change to 1 to enable MHP protocol ethertype usage
+          state <= IDLE;
+        end
       end
     endcase
   end

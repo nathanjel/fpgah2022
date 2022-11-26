@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="3,354.001 ns"></ZoomEndTime>
-      <Cursor1Time time="990.000 ns"></Cursor1Time>
+      <ZoomStartTime time="48,523.333 ns"></ZoomStartTime>
+      <ZoomEndTime time="51,891.334 ns"></ZoomEndTime>
+      <Cursor1Time time="51,330.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="469"></NameColumnWidth>
-      <ValueColumnWidth column_width="196"></ValueColumnWidth>
+      <ValueColumnWidth column_width="189"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="19" />
+   <WVObjectSize size="20" />
    <wave_markers>
       <marker time="400000000" label="" />
       <marker time="230000" label="" />
@@ -95,6 +95,10 @@
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/eth_frame_send_addr" type="array">
       <obj_property name="ElementShortName">eth_frame_send_addr[9:0]</obj_property>
       <obj_property name="ObjectShortName">eth_frame_send_addr[9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/r_counter_clock" type="array">
+      <obj_property name="ElementShortName">r_counter_clock[31:0]</obj_property>
+      <obj_property name="ObjectShortName">r_counter_clock[31:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/eth_rec_dead_cnt" type="array">
       <obj_property name="ElementShortName">eth_rec_dead_cnt[5:0]</obj_property>

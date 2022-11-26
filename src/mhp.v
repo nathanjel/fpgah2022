@@ -118,8 +118,9 @@ localparam  WRITEA       = 5;
 localparam  WRITECOMPLETE = 6;
 localparam  PING_REPLY_1 = 7;
 localparam  PING_REPLY_2 = 8;
-
-localparam ETH_FRAME_PAYLOAD_MINIMAL_SIZE = 46;
+localparam  WAIT_FOR_TCHANGE = 9;
+localparam  WRITE_PORT_1 = 10;
+localparam  WRITE_PORT_2 = 11;
 
 always @(posedge i_clk) begin
   if (i_rst) begin
@@ -174,14 +175,13 @@ always @(posedge i_clk) begin
           r_req <= 1;
         end else begin
           eth_rec_dead_cnt <= eth_rec_dead_cnt + 1;
-          if (eth_rec_dead_cnt == 6'b111111)
+          if (eth_rec_dead_cnt == 6'b111110)
             state <= READCOMPLETE;
         end  
       end
       READCOMPLETE: begin
         state <= IDLE;
         if (done == 0) begin
-          // done <= 1;
           state <= PING_REPLY_1;
           eth_frame_send_addr = 0;
         end else begin
@@ -204,9 +204,32 @@ always @(posedge i_clk) begin
         if (eth_frame_send_addr != eth_frame_load_addr) begin
           state <= PING_REPLY_1;
         end else begin
+          eth_frame_send_addr <= r_counter_clock[29:20];
+          state <= WAIT_FOR_TCHANGE;
+        end
+      end
+      WAIT_FOR_TCHANGE: begin
+        if (eth_frame_send_addr != r_counter_clock[29:20]) begin
+          done <= 1;
           state <= IDLE;
         end
       end
+      WRITE_PORT_1: begin
+        w_valid <= 0;
+        w_data <= eth_payload_frame_ram[eth_frame_load_addr];
+        w_data_u <= eth_payload_frame_ram[eth_frame_load_addr];
+        eth_frame_load_addr <= eth_frame_load_addr + 1;
+        state <= WRITE_PORT_2;
+      end 
+      WRITE_PORT_2: begin
+        w_valid <= 1;
+        w_valid_u <= 1;
+        if (eth_frame_send_addr != eth_frame_load_addr) begin
+          state <= IDLE;
+        end else begin
+          state <= WRITE_PORT_1;
+        end
+      end 
     endcase
   end
 end

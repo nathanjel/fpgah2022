@@ -101,6 +101,7 @@ initial begin
     #100000 i_eth_rready <= 0;
     // wait for address
     for (int i = 0; i < 46; i++) begin
+      i_eth_rdata <= i;
       i_eth_rready <= 1;
       @(posedge o_eth_rreq);
       i_eth_rready <= 0;
