@@ -497,8 +497,10 @@ always @(posedge i_clk) begin
         mem_write_for_read <= 0;
         mem_write_enable_for_read <= 0;
         if (done == 0) begin
-          eth_frame_send_addr <= 0;
-          state <= PING_REPLY_1;
+          if (i_wready) begin
+            eth_frame_send_addr <= 0;
+            state <= PING_REPLY_1;
+          end
         end else begin
           state <= PREPARE;
         end
@@ -521,7 +523,8 @@ always @(posedge i_clk) begin
             state <= IDLE;
             // ready ack command
           end else begin
-            state <= WRITE_PORT_1;
+            if (i_wready)
+              state <= WRITE_PORT_1;
           end
       end
       PING_REPLY_1: begin
