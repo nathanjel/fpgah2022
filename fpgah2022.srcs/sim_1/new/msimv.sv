@@ -100,6 +100,10 @@ initial begin
     #20000 i_eth_rready <= 0;
     // wait for address req
     // send address data
+    #20 i_eth_rdata <= 8'h0e;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
     #20 i_eth_rdata <= 8'h12;
     i_eth_rready <= 1;
     @(posedge o_eth_rreq);

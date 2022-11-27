@@ -253,7 +253,7 @@ always @(posedge i_clk ) begin
      // if (header_reader_active) begin
        case (header_reader_state)
           HRW_INIT: begin
-            header_address_driver <= 0;
+            header_address_driver <= header_reader_state ? 1 : 0; // dirty hack for 0e
             if (header_reader_active)
               header_reader_state <= HRW_ADDR;
           end
@@ -262,15 +262,15 @@ always @(posedge i_clk ) begin
           end
           HRW_LOAD: begin
             case (header_address_driver[2:0])
-              3'b000: p_src_addr[15:8] <= mem_read;
-              3'b001: p_src_addr[7:0] <= mem_read;
-              3'b010: p_dst_addr[15:8] <= mem_read;
-              3'b011: p_dst_addr[7:0] <= mem_read;
-              3'b100: p_size[15:8] <= mem_read;
-              3'b101: p_size[7:0] <= mem_read;
-              3'b110: p_d_type[7:0] <= mem_read;
+              3'b001: p_src_addr[15:8] <= mem_read;
+              3'b010: p_src_addr[7:0] <= mem_read;
+              3'b011: p_dst_addr[15:8] <= mem_read;
+              3'b100: p_dst_addr[7:0] <= mem_read;
+              3'b101: p_size[15:8] <= mem_read;
+              3'b110: p_size[7:0] <= mem_read;
+              3'b111: p_d_type[7:0] <= mem_read;
             endcase
-            if (header_address_driver == 3'b110)
+            if (header_address_driver == 3'b111)
               header_reader_state <= HRW_DONE;
             else
               header_reader_state <= HRW_INC;
