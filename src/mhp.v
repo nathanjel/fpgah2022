@@ -538,7 +538,7 @@ always @(posedge i_clk) begin
         end
       end
       WAIT_FOR_TCHANGE: begin
-        if (eth_frame_send_addr == r_time[7:0]) begin // [29:20]) begin // [17:8]
+        if (eth_frame_send_addr != r_time[7:0]) begin // [29:20]) begin // [17:8]
           done <= 1;
           state <= PREPARE;
           cp_force_address_request <= 1;
