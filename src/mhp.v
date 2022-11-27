@@ -497,6 +497,7 @@ always @(posedge i_clk) begin
         mem_write_for_read <= 0;
         mem_write_enable_for_read <= 0;
         if (done == 0) begin
+          eth_frame_send_addr <= 0;
           state <= PING_REPLY_1;
         end else begin
           state <= PREPARE;
@@ -525,11 +526,9 @@ always @(posedge i_clk) begin
       end
       PING_REPLY_1: begin
         w_data <= 0;
-        if (i_wready) begin
-          w_valid <= 1;
-          state <= PING_REPLY_2;
-          eth_frame_send_addr <= eth_frame_send_addr + 1;
-        end
+        w_valid <= 1;
+        state <= PING_REPLY_2;
+        eth_frame_send_addr <= eth_frame_send_addr + 1;
       end
       PING_REPLY_2: begin
         w_valid <= 0;
@@ -541,7 +540,7 @@ always @(posedge i_clk) begin
         end
       end
       WAIT_FOR_TCHANGE: begin
-        if (eth_frame_send_addr == r_time[7:0]) begin // [29:20]) begin // [17:8]
+        if (eth_frame_send_addr != r_time[7:0]) begin // [29:20]) begin // [17:8]
           done <= 1;
           state <= PREPARE;
           cp_force_address_request <= 1;
