@@ -9,5 +9,3 @@ INFO: [VRFC 10-2263] Analyzing Verilog file "F:/home/nathan/workspaces/fpgah2022
 INFO: [VRFC 10-311] analyzing module scs
 INFO: [VRFC 10-2263] Analyzing Verilog file "F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/task_manager.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module task_manager
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/fpgah2022.srcs/sim_1/new/msimv.sv" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module msim

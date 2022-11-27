@@ -377,10 +377,11 @@ reg         rr_uart_e;
 
 reg         got_address;
 
-reg   [3:0] state       = 0;
+reg   [4:0] state       = 0;
 localparam  IDLE        = 0;
 localparam  READ        = 1;
 localparam  READA        = 2;
+localparam  READB        = 16;
 localparam  READCOMPLETE  = 3;
 localparam  WRITE       = 4;
 localparam  WRITEA       = 5;
@@ -441,15 +442,18 @@ always @(posedge i_clk) begin
       READ: begin
         mem_write_enable_for_read <= 0;
         mem_write_for_read <= i_rdata;
-        rr_uart_d <= i_rdata;
-        rr_uart_e <= 0;
+        // rr_uart_d <= i_rdata;
+        // rr_uart_e <= 0;
         r_req <= 0; // complete fifo
-        state <= READA; // continue reading
+        state <= READB; // continue reading
         eth_rec_dead_cnt <= 0;
       end
-      READA: begin
-        rr_uart_e <= 1 & ~(eth_rec_dead_cnt[5] | eth_rec_dead_cnt[4] | eth_rec_dead_cnt[3] | eth_rec_dead_cnt[2] | eth_rec_dead_cnt[1] | eth_rec_dead_cnt[0]) ;
+      READB: begin
         mem_write_enable_for_read <= 1;
+        state <= READA;
+      end
+      READA: begin
+        // rr_uart_e <= 1 & ~(eth_rec_dead_cnt[5] | eth_rec_dead_cnt[4] | eth_rec_dead_cnt[3] | eth_rec_dead_cnt[2] | eth_rec_dead_cnt[1] | eth_rec_dead_cnt[0]) ;
         if (i_rready) begin
           eth_frame_load_addr <= eth_frame_load_addr + 1;
           state <= READ;
@@ -461,8 +465,8 @@ always @(posedge i_clk) begin
         end  
       end
       READCOMPLETE: begin
-        rr_uart_e <= 0;
-        rr_uart_d <= 0;
+        // rr_uart_e <= 0;
+        // rr_uart_d <= 0;
         eth_frame_load_addr <= 0;
         eth_frame_send_addr <= 0;
         eth_frame_len <= eth_frame_load_addr;
@@ -557,8 +561,8 @@ assign    o_rreq   = r_req;
 assign    o_wdata  = w_data;
 assign    o_wvalid = w_valid;
 
-assign    o_wdata_u  = w_data_u | rr_uart_d;
-assign    o_wvalid_u = w_valid_u | rr_uart_e;
+assign    o_wdata_u  = w_data_u; //| rr_uart_d;
+assign    o_wvalid_u = w_valid_u; // | rr_uart_e;
 
 assign    p_direction = p_d_type[7];
 assign    p_type = p_d_type[6:0];
