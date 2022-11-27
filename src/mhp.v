@@ -550,7 +550,7 @@ always @(posedge i_clk) begin
       end
       WAIT_FOR_TCHANGE: begin
         w_valid <= 0;
-        if (i_wready) begin // [29:20]) begin // [17:8]
+        if (i_wready & r_send_enabled) begin // [29:20]) begin // [17:8]
           done <= 1;
           main_fsm_state <= PREPARE;
           cp_force_address_request <= 1;
