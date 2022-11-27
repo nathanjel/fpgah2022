@@ -1,7 +1,7 @@
 module scs
 	#(
 		parameter RAM_WIDTH 		= 8,
-		parameter RAM_ADDR_BITS 	= 10
+		parameter RAM_ADDR_BITS 	= 8
 		// // parameter DATA_FILE 		= "data_file.txt",
 		// parameter INIT_START_ADDR 	= 0,
 		// parameter INIT_END_ADDR		= 10
@@ -13,30 +13,32 @@ module scs
 	output reg                work_complete,
 	input							clock,
 	output reg						write_enable,
-   output 		[RAM_ADDR_BITS-1:0]	address,
+   output reg		[RAM_ADDR_BITS-1:0]	address,
    input 		[RAM_WIDTH-1:0] 	mem_output,
-	output reg 	[RAM_WIDTH-1:0] 	mem_input
+	output reg 	[RAM_WIDTH-1:0] 	mem_input,
+	input     	[15:0] payload_len
 	);
 
-	reg	[RAM_ADDR_BITS-1:0] mem_addr;
 	reg	[15:0] scs_out;
-	reg 	[15:0] payload_len;
-	wire  last_byte;
-	wire  payload_byte_1, payload_byte_2;
-
-	localparam  PAYLOAD_ADDR_1 = 4;
-	localparam  PAYLOAD_ADDR_2 = 5;
 	
+	wire  last_byte;
+
 	localparam    RESET     = 0;
 	localparam	  READY     = 1;
 	localparam    STEP1 		= 2;
 	localparam    STEP2 		= 3;
 	localparam    STEP3 		= 4;
 	localparam    STEP4 		= 5;
+	localparam    STEP1A 		= 10;
+	localparam    STEP2A 		= 11;
+	localparam    STEP3A 		= 12;
+	localparam    STEP4A 		= 13;
 	localparam    LOADA     = 6;
-	localparam    LOADB     = 7;
-	reg [2:0]     state     = RESET;
-	reg 			  mstate    = 0;
+	localparam    LOADAA     = 7;
+	localparam    LOADB     = 8;
+	localparam    LOADBB     = 9;
+	reg [3:0]     state;
+	reg 			  mstate;
 
    //  The forllowing code is only necessary if you wish to initialize the RAM 
    //  contents via an external file (use $readmemb for binary data)
@@ -46,60 +48,83 @@ module scs
    always @(posedge clock)
       if (reset) begin
       	state <= RESET;
+      	mstate <= 0;
+      	write_enable <= 0;
+      	mem_input <= 0;
+      	work_complete <= 0;
+      	address <= 0;
+      	scs_out <= 0;
       end else begin
-      	if (mstate) begin
 	      	case (state)
 	      		RESET: begin
-	      			mem_addr <= 0;
+	      			address <= 0;
 	      			scs_out <= 0;
 	      			work_complete <= 0;
-	      			payload_len <= 0;
 	      			state <= READY;
 	      			mem_input <= 0;
+	      			write_enable <= 0;	      			
 	      		end
 	      		READY: begin
-	      			if (mem_ready)
+	      			if (mem_ready) begin
 	      				state <= STEP1;
+	      			end
 	      		end
 	      		STEP1: begin
+	      			state <= last_byte ? LOADA : STEP1A;
+	      		end
+	      		STEP1A: begin
 	      			scs_out <= scs_out + mem_output;
-	      			state <= last_byte ? LOADA : STEP2;
+	      			address <= address + 1;
+	      			state <= STEP2;
 	      		end
 	      		STEP2: begin
+	      			state <= last_byte ? LOADA : STEP2A;
+	      		end
+	      		STEP2A: begin
 	      			scs_out <= scs_out + {mem_output, 1'b0};
-	      			state <= last_byte ? LOADA : STEP3;
+	      			address <= address + 1;
+	      			state <= STEP3;
 	      		end
 	      		STEP3: begin
+	      			state <= last_byte ? LOADA : STEP3A;
+	      		end
+	      		STEP3A: begin
 	      			scs_out <= scs_out + {mem_output, 2'b0};
-	      			state <= last_byte ? LOADA : STEP4;
+	      			address <= address + 1;
+	      			state <= STEP4;
 	      		end
 	      		STEP4: begin
+	      			state <= last_byte ? LOADA : STEP4A;
+	      		end
+	      		STEP4A: begin
 	      			scs_out <= scs_out + {mem_output, 3'b0};
-	      			state <= last_byte ? LOADA : STEP1;
+	      			address <= address + 1;
+	      			state <= STEP1;
 	      		end
 	      		LOADA: begin
-	      			mem_input <= scs_out[7:0];
+	      			mem_input <= scs_out[15:8];
+	      			// address <= address + 1;
+	      			state <= LOADAA;
+	      		end
+	      		LOADAA: begin
 	      			write_enable <= 1;
 	      			state <= LOADB;
 	      		end
 	      		LOADB: begin
-	      			mem_input <= scs_out[15:8];
+	      			address <= address + 1;
+	      			mem_input <= scs_out[7:0];
+	      			write_enable <= 0;
+	      			state <= LOADBB;
+	      		end
+	      		LOADBB: begin
+	      			// address <= address + 1;
 	      			write_enable <= 1;
 	      			work_complete <= 1;
 	      			state <= RESET;
 	      		end
 	      	endcase
-	      end else begin
-	      	mstate <= ~mstate;
-	      	write_enable <= 0;
-	      	if (state != RESET && state != READY)
-	      		mem_addr <= mem_addr + 1;
-	      end
       end
 
-assign address = mem_addr;
-assign last_byte = payload_len == mem_addr;
-assign payload_byte_1 = mem_addr == PAYLOAD_ADDR_1;
-assign payload_byte_2 = mem_addr == PAYLOAD_ADDR_2;
+assign last_byte = payload_len == address;
 
 endmodule

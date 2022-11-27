@@ -57,18 +57,25 @@ wire          w_valid_u;
 // frame counter 
 // if its size is less than 42 bytes
 
-wire [10-1:0] mem_address_for_scs;
+wire [7:0] mem_address_for_scs;
 wire mem_write_enable_for_scs;
 wire [7:0] mem_write_for_scs;
 
-reg [10-1:0] mem_address_for_set;
+reg [7:0] mem_address_for_set;
 reg mem_write_enable_for_set;
 reg [7:0] mem_write_for_set;
 
-reg [10-1:0] mem_address_for_send;
+reg [7:0] mem_address_for_cmd;
+reg mem_write_enable_for_cmd;
+reg [7:0] mem_write_for_cmd;
+
+// reg [10-1:0] mem_address_for_read;
+// equal to and replaced with eth_frame_load_addr
+reg mem_write_enable_for_read;
+reg [7:0] mem_write_for_read;
 
 wire mem_write_enable;
-wire [10-1:0] mem_address;
+wire [7:0] mem_address;
 wire [7:0] mem_write;
 wire [7:0] mem_read;
 wire scs_work_completed;
@@ -85,54 +92,13 @@ bram record_ram(
   .output_data (mem_read)
 );
 
-scs cscalc(
-  .reset(i_rst),
-  .mem_ready(mem_ready_for_scs),
-  .work_complete(scs_work_completed),
-  .clock(i_clk),
-  .write_enable(mem_write_enable_for_scs),
-  .address(mem_address_for_scs),
-  .mem_output(mem_read),
-  .mem_input(mem_write_for_scs)
-);
-
-reg   [15:0]  p_dst_addr;
-reg   [15:0]  p_src_addr;
-reg   [15:0]  p_size;
-reg   [7:0]   p_d_type;
-reg   [15:0]  p_scs;
-reg   [5:0]   load_addr;
-
-wire  p_direction;
-wire  [6:0] p_type;
-
-reg [7:0] eth_payload_frame_ram [(2**10)-1:0];
+reg [7:0] eth_frame_len;
 reg [7:0] eth_frame_load_addr;
 reg [7:0] eth_frame_send_addr;
 
 reg [5:0] eth_rec_dead_cnt;
 
-//  fsm
-reg   [3:0] state       = 0;
-
-localparam  IDLE        = 0;
-localparam  READ        = 1;
-localparam  READA        = 2;
-localparam  READCOMPLETE  = 3;
-localparam  WRITE       = 4;
-localparam  WRITEA       = 5;
-localparam  WRITECOMPLETE = 6;
-localparam  PING_REPLY_1 = 7;
-localparam  PING_REPLY_2 = 8;
-localparam  WAIT_FOR_TCHANGE = 9;
-localparam  WRITE_PORT_1 = 10;
-localparam  WRITE_PORT_2 = 11;
-localparam  WRITE_PORT_21 = 15;
-localparam  WRITE_PORT_3 = 12;
-localparam  PREPARE = 13;
-localparam  PROCESSING = 14;
-
-reg   [3:0] command   = 0;
+reg   [4:0] command   = 0;
 localparam  COMMAND_REQ_ADDR  = 3; // x03
 
 reg   e_enable_data_set;
@@ -146,9 +112,23 @@ localparam SETCONTROL_2 = 2;
 localparam SETCONTROL_3 = 3;
 
 wire [7:0] set_control_wire;
-assign set_control_wire = {command, mem_address_for_set[3:0]};
+assign set_control_wire = {command[3:0], mem_address_for_set[3:0]};
 reg [7:0] mem_writes_counter;
+reg [15:0] mem_writes_counter_minus_2;
 
+scs cscalc(
+  .reset(i_rst),
+  .mem_ready(mem_ready_for_scs),
+  .work_complete(scs_work_completed),
+  .clock(i_clk),
+  .write_enable(mem_write_enable_for_scs),
+  .address(mem_address_for_scs),
+  .mem_output(mem_read),
+  .mem_input(mem_write_for_scs),
+  .payload_len (mem_writes_counter_minus_2)
+);
+
+// general message writer
 always @(posedge i_clk) begin
   if (i_rst) begin
     mem_writes_counter <= 0;
@@ -157,6 +137,7 @@ always @(posedge i_clk) begin
   end else begin
     if (e_enable_data_set & ~data_set_complete) begin
       case (set_control_wire)
+        // address request
         8'b00110000: mem_write_for_set <= 8'hff;
         8'b00110001: mem_write_for_set <= 8'hff;
         8'b00110010: mem_write_for_set <= 8'h00;
@@ -168,6 +149,37 @@ always @(posedge i_clk) begin
         8'b00111001: mem_write_for_set <= 8'h00;
         8'b00111010: mem_write_for_set <= 8'h00;
         8'b00111011: begin
+          data_set_complete <= 1;
+          mem_writes_counter <= mem_address_for_set;
+        end
+        // address grant - send ready
+        8'b01000000: mem_write_for_set <= 8'hff;
+        8'b01000001: mem_write_for_set <= 8'hff;
+        8'b01000010: mem_write_for_set <= 8'h00;
+        8'b01000011: mem_write_for_set <= 8'h00;
+        8'b01000100: mem_write_for_set <= 8'h00;
+        8'b01000101: mem_write_for_set <= 8'h02;
+        8'b01000110: mem_write_for_set <= 8'h92;
+        8'b01000111: mem_write_for_set <= 8'h01;
+        8'b01001000: mem_write_for_set <= 8'h20;
+        8'b01001001: mem_write_for_set <= 8'h00;
+        8'b01001010: mem_write_for_set <= 8'h00;
+        8'b01001011: begin
+          data_set_complete <= 1;
+          mem_writes_counter <= mem_address_for_set;
+        end
+        // ping response
+        8'b00010000: mem_write_for_set <= 8'hff;
+        8'b00010001: mem_write_for_set <= 8'hff;
+        8'b00010010: mem_write_for_set <= 8'h00;
+        8'b00010011: mem_write_for_set <= 8'h00;
+        8'b00010100: mem_write_for_set <= 8'h00;
+        8'b00010101: mem_write_for_set <= 8'h01;
+        8'b00010110: mem_write_for_set <= 8'h81;
+        8'b00010111: mem_write_for_set <= 8'h00;
+        8'b00011000: mem_write_for_set <= 8'h00;
+        8'b00011001: mem_write_for_set <= 8'h00;
+        8'b00011010: begin
           data_set_complete <= 1;
           mem_writes_counter <= mem_address_for_set;
         end
@@ -202,26 +214,198 @@ always @(posedge i_clk) begin
   end
 end
 
-// machine
+// address and command reader
+reg   header_reader_active;
+reg   header_reader_complete;
+reg   [7:0]   header_address_driver;
+reg   [15:0]  p_dst_addr;
+reg   [15:0]  p_src_addr;
+reg   [15:0]  p_size;
+reg   [7:0]   p_d_type;
+reg   [15:0]  p_scs;
+
+reg   [2:0] header_reader_state;
+localparam HRW_INIT = 0;
+localparam HRW_ADDR = 1;
+localparam HRW_LOAD = 2;
+localparam HRW_DONE = 3;
+wire  p_direction;
+wire  [6:0] p_type;
+
+always @(posedge i_clk ) begin
+  if(i_rst) begin
+     p_dst_addr <= 0;
+     p_src_addr <= 0;
+     p_size <= 0;
+     p_d_type <= 0;
+     p_scs <= 0;
+     header_reader_state <= HRW_INIT;
+     header_address_driver <= 0;
+  end else begin
+     // if (header_reader_active) begin
+       case (header_reader_state)
+          HRW_INIT: begin
+            header_address_driver <= 0;
+            if (header_reader_active)
+              header_reader_state <= HRW_ADDR;
+          end
+          HRW_ADDR: begin
+            header_reader_state <= HRW_LOAD;
+          end
+          HRW_LOAD: begin
+            case (header_address_driver[2:0])
+              3'b000: p_src_addr[15:8] <= mem_read;
+              3'b001: p_src_addr[7:0] <= mem_read;
+              3'b010: p_dst_addr[15:8] <= mem_read;
+              3'b011: p_dst_addr[7:0] <= mem_read;
+              3'b100: p_size[15:8] <= mem_read;
+              3'b101: p_size[7:0] <= mem_read;
+              3'b110: p_d_type[7:0] <= mem_read;
+            endcase
+            header_address_driver <= header_address_driver + 1;
+            if (header_address_driver == 3'b110)
+              header_reader_state <= HRW_DONE;
+            else
+              header_reader_state <= HRW_ADDR;
+          end
+          HRW_DONE: begin
+            header_reader_state <= HRW_INIT;
+          end
+       endcase
+     // end
+  end
+end
+
+// command processor
+reg         cp_force_address_request;
+reg         command_processor_active;
+reg   [3:0] command_processor_state;
+localparam CP_INIT = 0;
+localparam CP_HEAD = 1;
+localparam CP_ACTI = 2;
+localparam CP_LOAD = 3;
+localparam CP_FILL1 = 4;
+localparam CP_FILL2 = 5;
+localparam CP_FILL3 = 6;
+localparam CP_FILL4 = 7;
+localparam CP_FILLS = 8;
+localparam CP_DONE = 9;
+always @(posedge i_clk) begin
+  if(i_rst) begin
+    mem_ready_for_scs <= 0;
+    e_enable_data_set <= 0;
+    command_processor_state <= CP_INIT;
+    header_reader_active <= 0;
+    mem_write_for_cmd <= 0;
+    mem_address_for_cmd <= 0;
+    mem_write_enable_for_cmd <= 0;
+    mem_writes_counter_minus_2 <= 0;
+  end else begin
+    case (command_processor_state)
+      CP_INIT: begin
+        if (command_processor_active)
+          command_processor_state <= CP_HEAD;
+      end
+      CP_HEAD: begin
+        if (header_reader_state == HRW_DONE) begin
+          command <= cp_force_address_request ? COMMAND_REQ_ADDR : p_d_type[4:0];
+          header_reader_active <= 0;
+          command_processor_state <= CP_ACTI;
+        end else
+          header_reader_active <= 1;
+      end
+      CP_ACTI: begin
+        if (p_type[4])
+          command_processor_state <= CP_DONE;
+        else
+          command_processor_state <= CP_LOAD;
+      end
+      CP_LOAD: begin
+        if (data_set_complete) begin
+          e_enable_data_set <= 0;
+          command_processor_state <= CP_FILL1;
+          mem_writes_counter_minus_2 <= mem_writes_counter - 2;
+        end else
+          e_enable_data_set <= 1;
+      end
+      CP_FILL1: begin
+        command_processor_state <= CP_FILL2;
+        mem_address_for_cmd <= 8'h00;
+        mem_write_for_cmd <= p_dst_addr[15:8];
+        mem_write_enable_for_cmd <= 1;
+      end
+      CP_FILL2: begin
+        command_processor_state <= CP_FILL3;
+        mem_address_for_cmd <= 8'h01;
+        mem_write_for_cmd <= p_dst_addr[7:0];
+        mem_write_enable_for_cmd <= 1;
+      end
+      CP_FILL3: begin
+        mem_address_for_cmd <= 8'h02;
+        mem_write_for_cmd <= p_src_addr[15:8];
+        mem_write_enable_for_cmd <= 1;
+        command_processor_state <= CP_FILL4;
+      end
+      CP_FILL4: begin
+        mem_address_for_cmd <= 8'h03;
+        mem_write_for_cmd <= p_src_addr[7:0];
+        mem_write_enable_for_cmd <= 1;
+        command_processor_state <= CP_FILLS;
+      end
+      CP_FILLS: begin
+        mem_write_for_cmd <= 0;
+        mem_address_for_cmd <= 0;
+        mem_write_enable_for_cmd <= 0;        
+        if (scs_work_completed | cp_force_address_request) begin
+          mem_ready_for_scs <= 0;
+          command_processor_state <= CP_DONE;
+        end else begin
+          mem_ready_for_scs <= 1;
+        end
+      end
+      CP_DONE: begin
+        command_processor_state <= CP_INIT;
+      end
+    endcase
+  end
+end
+
+// the machine
+reg   [3:0] state       = 0;
+localparam  IDLE        = 0;
+localparam  READ        = 1;
+localparam  READA        = 2;
+localparam  READCOMPLETE  = 3;
+localparam  WRITE       = 4;
+localparam  WRITEA       = 5;
+localparam  WRITECOMPLETE = 6;
+localparam  PING_REPLY_1 = 7;
+localparam  PING_REPLY_2 = 8;
+localparam  WAIT_FOR_TCHANGE = 9;
+localparam  WRITE_PORT_1 = 10;
+localparam  WRITE_PORT_2 = 11;
+localparam  WRITE_PORT_21 = 15;
+localparam  WRITE_PORT_3 = 12;
+localparam  PREPARE = 13;
+localparam  PROCESSING = 14;
+
 always @(posedge i_clk) begin
   if (i_rst) begin
     done    <= 0;
     w_data  <= 0;
     w_valid <= 0;
     state   <= IDLE;
+    mem_enable <= 1;
   end
   else begin
     case (state)
       IDLE: begin
-        load_addr = 0;
         w_valid <= 0;
-        e_enable_data_set <= 0;
-        mem_address_for_send <= 0;
+        command_processor_active <= 0;
+        eth_frame_len <= 0;
         eth_frame_load_addr <= 0;
         eth_frame_send_addr <= 0;
         eth_rec_dead_cnt <= 0;
-        mem_enable <= 1;
-        mem_ready_for_scs <= 0;
         if (i_rready) begin // received frame's payload ready
           r_req   <= 1;     // r_req set before read state, so we can expect valid data in READ state
           state   <= READ;
@@ -246,14 +430,16 @@ always @(posedge i_clk) begin
       //   end
       // end
       READ: begin
-        eth_payload_frame_ram[eth_frame_load_addr] <= i_rdata;
-        eth_frame_load_addr <= eth_frame_load_addr + 1;
+        mem_write_enable_for_read <= 0;
+        mem_write_for_read <= i_rdata;
         r_req <= 0; // complete fifo
         state <= READA; // continue reading
         eth_rec_dead_cnt <= 0;
       end
       READA: begin
+        mem_write_enable_for_read <= 1;
         if (i_rready) begin
+          eth_frame_load_addr <= eth_frame_load_addr + 1;
           state <= READ;
           r_req <= 1;
         end else begin
@@ -264,25 +450,36 @@ always @(posedge i_clk) begin
       end
       READCOMPLETE: begin
         state <= IDLE;
+        eth_frame_load_addr <= 0;
+        eth_frame_send_addr <= 0;
+        eth_frame_len <= eth_frame_load_addr;
+        mem_write_for_read <= 0;
+        mem_write_enable_for_read <= 0;
         if (done == 0) begin
           state <= PING_REPLY_1;
-          eth_frame_send_addr = 0;
         end else begin
-          // normal processing
+          state <= PREPARE;
         end
       end
       PREPARE: begin
-        e_enable_data_set <= 1;
-        if (data_set_complete) begin
+        if (command_processor_state == CP_DONE) begin
           state <= PROCESSING;
+          command_processor_active <= 0;
+        end else begin 
+          command_processor_active <= 1;
         end
       end
       PROCESSING: begin
           e_enable_data_set <= 0;
           eth_frame_load_addr <= 0;
           eth_frame_send_addr <= mem_writes_counter;
-          state <= WRITE_PORT_1;
-          command <= 0;
+          cp_force_address_request <= 0;
+          if (p_type[4]) begin
+            state <= IDLE;
+            // ready ack command
+          end else begin
+            state <= WRITE_PORT_1;
+          end
       end
       PING_REPLY_1: begin
         w_data <= 0;
@@ -294,7 +491,7 @@ always @(posedge i_clk) begin
       end
       PING_REPLY_2: begin
         w_valid <= 0;
-        if (eth_frame_send_addr != eth_frame_load_addr) begin
+        if (eth_frame_send_addr != eth_frame_len) begin
           state <= PING_REPLY_1;
         end else begin
           eth_frame_send_addr <= r_time[7:0]; // [29:20];  // [17:8]
@@ -302,15 +499,15 @@ always @(posedge i_clk) begin
         end
       end
       WAIT_FOR_TCHANGE: begin
-        if (eth_frame_send_addr != r_time[7:0]) begin // [29:20]) begin // [17:8]
+        if (eth_frame_send_addr == r_time[7:0]) begin // [29:20]) begin // [17:8]
           done <= 1;
           state <= PREPARE;
-          command <= COMMAND_REQ_ADDR;
+          cp_force_address_request <= 1;
         end
       end
       WRITE_PORT_1: begin
         w_valid <= 0;
-        mem_address_for_send <= eth_frame_load_addr;
+        // mem_address_for_send <= eth_frame_load_addr;
         state <= WRITE_PORT_2;
       end 
       WRITE_PORT_2: begin
@@ -352,8 +549,8 @@ assign    o_wvalid_u = w_valid_u;
 assign    p_direction = p_d_type[7];
 assign    p_type = p_d_type[6:0];
 
-assign    mem_write_enable = mem_write_enable_for_scs | mem_write_enable_for_set;
-assign    mem_address = mem_address_for_scs | mem_address_for_send | mem_address_for_set;
-assign    mem_write = mem_write_for_scs | mem_write_for_set;
+assign    mem_write_enable = mem_write_enable_for_scs | mem_write_enable_for_set | mem_write_enable_for_read | mem_write_enable_for_cmd;
+assign    mem_address = mem_address_for_scs | mem_address_for_set | eth_frame_load_addr | header_address_driver | mem_address_for_cmd;
+assign    mem_write = mem_write_for_scs | mem_write_for_set | mem_write_for_read | mem_write_for_cmd;
 
 endmodule

@@ -9,6 +9,7 @@ module bram
 	
 	(
 	input							clock,
+	input 						reset,
 	input							ram_enable,
 	input							write_enable,
     input 		[RAM_ADDR_BITS-1:0]	address,
@@ -24,10 +25,13 @@ module bram
    //    $readmemh(DATA_FILE, ram_name, INIT_START_ADDR, INIT_END_ADDR);
 
    always @(posedge clock)
-      if (ram_enable) begin
-         if (write_enable)
-            ram_name[address] <= input_data;
-         output_data <= ram_name[address];
-      end
-
+      if(reset) begin
+      	output_data <= 0;
+      end else begin
+	      if (ram_enable) begin
+	         if (write_enable)
+	            ram_name[address] <= input_data;
+	         output_data <= ram_name[address];
+	      end
+	   end
 endmodule

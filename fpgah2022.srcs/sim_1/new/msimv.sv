@@ -96,17 +96,181 @@ initial begin
       i_eth_rready <= 1;
       @(posedge o_eth_rreq);
       i_eth_rready <= 0;
-      #1000 i_eth_rready <= 0;
+      #100 i_eth_rready <= 0;
     end
-    #100000 i_eth_rready <= 0;
-    // wait for address
+    #10000 i_eth_rready <= 0;
+    // wait for address req
+    // send address data
+    #100 i_eth_rdata <= 8'haa;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'haa;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'hbb;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'hbb;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'h00;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'h02;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'h04;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'haa;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'haa;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'hcc;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'hcc;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
     for (int i = 0; i < 46; i++) begin
-      i_eth_rdata <= i;
+      #100 i_eth_rdata <= i;
       i_eth_rready <= 1;
       @(posedge o_eth_rreq);
       i_eth_rready <= 0;
       #100 i_eth_rready <= 0;
     end
+    // wait for ready shit
+    #10000 i_eth_rready <= 0;
+    // send ready ack
+    // send ready ack
+    // send ready ack
+    // send ready ack
+    // send ready ack
+    #100 i_eth_rdata <= 8'haa;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'haa;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'hbb;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'hbb;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'h00;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'h02;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'h13;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'haa;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'haa;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'hcc;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'hcc;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    for (int i = 0; i < 46; i++) begin
+      #100 i_eth_rdata <= i;
+      i_eth_rready <= 1;
+      @(posedge o_eth_rreq);
+      i_eth_rready <= 0;
+      #100 i_eth_rready <= 0;
+    end
+    // wait for ready shit
+    #10000 i_eth_rready <= 0;
+    // send ping
+    // send ping
+    // send ping
+    // send ping
+    // send ping
+    // send ping
+    #100 i_eth_rdata <= 8'haa;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'haa;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'hbb;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'hbb;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'h00;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'h02;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'h01;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'haa;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'haa;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'hcc;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'hcc;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    for (int i = 0; i < 46; i++) begin
+      #100 i_eth_rdata <= i;
+      i_eth_rready <= 1;
+      @(posedge o_eth_rreq);
+      i_eth_rready <= 0;
+      #100 i_eth_rready <= 0;
+    end
+    // wait for ready shit
+    #10000 i_eth_rready <= 0;
 end
 
 

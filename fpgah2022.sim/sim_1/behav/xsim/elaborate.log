@@ -4,7 +4,6 @@ Running: C:/Xilinx/Vivado/2022.1/bin/unwrapped/win64.o/xelab.exe --incr --debug 
 Using 2 slave threads.
 Starting static elaboration
 Pass Through NonSizing Optimizer
-WARNING: [VRFC 10-3091] actual bit length 10 differs from formal bit length 8 for port 'address' [F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/mhp.v:83]
 Completed static elaboration
 Starting simulation data flow analysis
 WARNING: [XSIM 43-4099] "F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/bram.v" Line 1. Module bram doesn't have a timescale but at least one module in design has a timescale.

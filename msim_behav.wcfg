@@ -11,34 +11,38 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="51,199.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="52,918.001 ns"></ZoomEndTime>
-      <Cursor1Time time="51,821.000 ns"></Cursor1Time>
+      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
+      <ZoomEndTime time="100.000001 us"></ZoomEndTime>
+      <Cursor1Time time="22.873239 us"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="469"></NameColumnWidth>
-      <ValueColumnWidth column_width="154"></ValueColumnWidth>
+      <NameColumnWidth column_width="465"></NameColumnWidth>
+      <ValueColumnWidth column_width="102"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="27" />
+   <WVObjectSize size="45" />
    <wave_markers>
       <marker time="400000000" label="" />
       <marker time="230000" label="" />
    </wave_markers>
-   <wvobject fp_name="/msim/clk_50" type="logic">
-      <obj_property name="ElementShortName">clk_50</obj_property>
-      <obj_property name="ObjectShortName">clk_50</obj_property>
-   </wvobject>
-   <wvobject fp_name="/msim/clk_phy" type="logic">
-      <obj_property name="ElementShortName">clk_phy</obj_property>
-      <obj_property name="ObjectShortName">clk_phy</obj_property>
-   </wvobject>
-   <wvobject fp_name="/msim/o_link" type="logic">
-      <obj_property name="ElementShortName">o_link</obj_property>
-      <obj_property name="ObjectShortName">o_link</obj_property>
-   </wvobject>
-   <wvobject fp_name="/msim/reset" type="logic">
-      <obj_property name="ElementShortName">reset</obj_property>
-      <obj_property name="ObjectShortName">reset</obj_property>
+   <wvobject fp_name="group2400" type="group">
+      <obj_property name="label">clocks</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/msim/clk_50" type="logic">
+         <obj_property name="ElementShortName">clk_50</obj_property>
+         <obj_property name="ObjectShortName">clk_50</obj_property>
+      </wvobject>
+      <wvobject fp_name="/msim/clk_phy" type="logic">
+         <obj_property name="ElementShortName">clk_phy</obj_property>
+         <obj_property name="ObjectShortName">clk_phy</obj_property>
+      </wvobject>
+      <wvobject fp_name="/msim/o_link" type="logic">
+         <obj_property name="ElementShortName">o_link</obj_property>
+         <obj_property name="ObjectShortName">o_link</obj_property>
+      </wvobject>
+      <wvobject fp_name="/msim/reset" type="logic">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
    </wvobject>
    <wvobject fp_name="/msim/i_eth_rdata" type="array">
       <obj_property name="ElementShortName">i_eth_rdata[7:0]</obj_property>
@@ -64,38 +68,42 @@
       <obj_property name="ElementShortName">o_eth_wvalid</obj_property>
       <obj_property name="ObjectShortName">o_eth_wvalid</obj_property>
    </wvobject>
-   <wvobject fp_name="/msim/i_uart_rdata" type="array">
-      <obj_property name="ElementShortName">i_uart_rdata[7:0]</obj_property>
-      <obj_property name="ObjectShortName">i_uart_rdata[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/msim/i_uart_rready" type="logic">
-      <obj_property name="ElementShortName">i_uart_rready</obj_property>
-      <obj_property name="ObjectShortName">i_uart_rready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/msim/o_uart_rreq" type="logic">
-      <obj_property name="ElementShortName">o_uart_rreq</obj_property>
-      <obj_property name="ObjectShortName">o_uart_rreq</obj_property>
+   <wvobject fp_name="group2401" type="group">
+      <obj_property name="label">uarts</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/msim/i_uart_rdata" type="array">
+         <obj_property name="ElementShortName">i_uart_rdata[7:0]</obj_property>
+         <obj_property name="ObjectShortName">i_uart_rdata[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/msim/i_uart_rready" type="logic">
+         <obj_property name="ElementShortName">i_uart_rready</obj_property>
+         <obj_property name="ObjectShortName">i_uart_rready</obj_property>
+      </wvobject>
+      <wvobject fp_name="/msim/o_uart_wvalid" type="logic">
+         <obj_property name="ElementShortName">o_uart_wvalid</obj_property>
+         <obj_property name="ObjectShortName">o_uart_wvalid</obj_property>
+      </wvobject>
+      <wvobject fp_name="/msim/o_uart_rreq" type="logic">
+         <obj_property name="ElementShortName">o_uart_rreq</obj_property>
+         <obj_property name="ObjectShortName">o_uart_rreq</obj_property>
+      </wvobject>
+      <wvobject fp_name="/msim/o_uart_wdata" type="array">
+         <obj_property name="ElementShortName">o_uart_wdata[7:0]</obj_property>
+         <obj_property name="ObjectShortName">o_uart_wdata[7:0]</obj_property>
+      </wvobject>
    </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/state" type="array">
       <obj_property name="ElementShortName">state[3:0]</obj_property>
       <obj_property name="ObjectShortName">state[3:0]</obj_property>
       <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/msim/o_uart_wvalid" type="logic">
-      <obj_property name="ElementShortName">o_uart_wvalid</obj_property>
-      <obj_property name="ObjectShortName">o_uart_wvalid</obj_property>
-   </wvobject>
-   <wvobject fp_name="/msim/o_uart_wdata" type="array">
-      <obj_property name="ElementShortName">o_uart_wdata[7:0]</obj_property>
-      <obj_property name="ObjectShortName">o_uart_wdata[7:0]</obj_property>
-   </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/eth_frame_load_addr" type="array">
-      <obj_property name="ElementShortName">eth_frame_load_addr[9:0]</obj_property>
-      <obj_property name="ObjectShortName">eth_frame_load_addr[9:0]</obj_property>
+      <obj_property name="ElementShortName">eth_frame_load_addr[7:0]</obj_property>
+      <obj_property name="ObjectShortName">eth_frame_load_addr[7:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/eth_frame_send_addr" type="array">
-      <obj_property name="ElementShortName">eth_frame_send_addr[9:0]</obj_property>
-      <obj_property name="ObjectShortName">eth_frame_send_addr[9:0]</obj_property>
+      <obj_property name="ElementShortName">eth_frame_send_addr[7:0]</obj_property>
+      <obj_property name="ObjectShortName">eth_frame_send_addr[7:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/r_counter_clock" type="array">
       <obj_property name="ElementShortName">r_counter_clock[31:0]</obj_property>
@@ -108,7 +116,6 @@
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/set_control_wire" type="array">
       <obj_property name="ElementShortName">set_control_wire[7:0]</obj_property>
       <obj_property name="ObjectShortName">set_control_wire[7:0]</obj_property>
-      <obj_property name="isExpanded"></obj_property>
    </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/e_enable_data_set" type="logic">
       <obj_property name="ElementShortName">e_enable_data_set</obj_property>
@@ -119,8 +126,20 @@
       <obj_property name="ObjectShortName">data_set_complete</obj_property>
    </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/mem_address" type="array">
-      <obj_property name="ElementShortName">mem_address[9:0]</obj_property>
-      <obj_property name="ObjectShortName">mem_address[9:0]</obj_property>
+      <obj_property name="ElementShortName">mem_address[7:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_address[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/mem_address_for_scs" type="array">
+      <obj_property name="ElementShortName">mem_address_for_scs[7:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_address_for_scs[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/eth_frame_load_addr" type="array">
+      <obj_property name="ElementShortName">eth_frame_load_addr[7:0]</obj_property>
+      <obj_property name="ObjectShortName">eth_frame_load_addr[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/header_address_driver" type="array">
+      <obj_property name="ElementShortName">header_address_driver[7:0]</obj_property>
+      <obj_property name="ObjectShortName">header_address_driver[7:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/mem_write" type="array">
       <obj_property name="ElementShortName">mem_write[7:0]</obj_property>
@@ -133,5 +152,93 @@
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/mem_write_enable" type="logic">
       <obj_property name="ElementShortName">mem_write_enable</obj_property>
       <obj_property name="ObjectShortName">mem_write_enable</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/header_reader_state" type="array">
+      <obj_property name="ElementShortName">header_reader_state[2:0]</obj_property>
+      <obj_property name="ObjectShortName">header_reader_state[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/command_processor_state" type="array">
+      <obj_property name="ElementShortName">command_processor_state[3:0]</obj_property>
+      <obj_property name="ObjectShortName">command_processor_state[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/p_dst_addr" type="array">
+      <obj_property name="ElementShortName">p_dst_addr[15:0]</obj_property>
+      <obj_property name="ObjectShortName">p_dst_addr[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/p_src_addr" type="array">
+      <obj_property name="ElementShortName">p_src_addr[15:0]</obj_property>
+      <obj_property name="ObjectShortName">p_src_addr[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/p_size" type="array">
+      <obj_property name="ElementShortName">p_size[15:0]</obj_property>
+      <obj_property name="ObjectShortName">p_size[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/p_d_type" type="array">
+      <obj_property name="ElementShortName">p_d_type[7:0]</obj_property>
+      <obj_property name="ObjectShortName">p_d_type[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/p_scs" type="array">
+      <obj_property name="ElementShortName">p_scs[15:0]</obj_property>
+      <obj_property name="ObjectShortName">p_scs[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/cscalc/reset" type="logic">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/cscalc/mem_ready" type="logic">
+      <obj_property name="ElementShortName">mem_ready</obj_property>
+      <obj_property name="ObjectShortName">mem_ready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/cscalc/work_complete" type="logic">
+      <obj_property name="ElementShortName">work_complete</obj_property>
+      <obj_property name="ObjectShortName">work_complete</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/cscalc/clock" type="logic">
+      <obj_property name="ElementShortName">clock</obj_property>
+      <obj_property name="ObjectShortName">clock</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/cscalc/write_enable" type="logic">
+      <obj_property name="ElementShortName">write_enable</obj_property>
+      <obj_property name="ObjectShortName">write_enable</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/cscalc/address" type="array">
+      <obj_property name="ElementShortName">address[7:0]</obj_property>
+      <obj_property name="ObjectShortName">address[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/mem_writes_counter" type="array">
+      <obj_property name="ElementShortName">mem_writes_counter[7:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_writes_counter[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/mem_writes_counter_minus_2" type="array">
+      <obj_property name="ElementShortName">mem_writes_counter_minus_2[15:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_writes_counter_minus_2[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/cscalc/mem_output" type="array">
+      <obj_property name="ElementShortName">mem_output[7:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_output[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/cscalc/mem_input" type="array">
+      <obj_property name="ElementShortName">mem_input[7:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_input[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/cscalc/payload_len" type="array">
+      <obj_property name="ElementShortName">payload_len[15:0]</obj_property>
+      <obj_property name="ObjectShortName">payload_len[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/cscalc/scs_out" type="array">
+      <obj_property name="ElementShortName">scs_out[15:0]</obj_property>
+      <obj_property name="ObjectShortName">scs_out[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/cscalc/last_byte" type="logic">
+      <obj_property name="ElementShortName">last_byte</obj_property>
+      <obj_property name="ObjectShortName">last_byte</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/cscalc/state" type="array">
+      <obj_property name="ElementShortName">state[3:0]</obj_property>
+      <obj_property name="ObjectShortName">state[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/cscalc/mstate" type="logic">
+      <obj_property name="ElementShortName">mstate</obj_property>
+      <obj_property name="ObjectShortName">mstate</obj_property>
    </wvobject>
 </wave_config>
