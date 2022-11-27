@@ -98,6 +98,7 @@ reg [7:0] eth_frame_send_addr;
 
 reg [5:0] eth_rec_dead_cnt;
 
+reg         got_address;
 reg   [4:0] command   = 0;
 localparam  COMMAND_REQ_ADDR  = 3; // x03
 
@@ -400,7 +401,7 @@ end
 reg   [7:0] rr_uart_d;
 reg         rr_uart_e;
 
-reg         got_address;
+
 
 reg   [3:0] state       = 0;
 localparam  IDLE        = 0;
@@ -540,7 +541,7 @@ always @(posedge i_clk) begin
         end
       end
       WAIT_FOR_TCHANGE: begin
-        if (eth_frame_send_addr != r_time[7:0]) begin // [29:20]) begin // [17:8]
+        if (eth_frame_send_addr == r_time[7:0]) begin // [29:20]) begin // [17:8]
           done <= 1;
           state <= PREPARE;
           cp_force_address_request <= 1;
