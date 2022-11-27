@@ -308,7 +308,8 @@ always @(posedge i_clk) begin
       end
       CP_HEAD: begin
         if (header_reader_state == HRW_DONE) begin
-          command <= cp_force_address_request ? COMMAND_REQ_ADDR : p_d_type[4:0];
+          command <= cp_force_address_request ? COMMAND_REQ_ADDR : 
+                                                                      (got_address ? p_d_type[4:0] : 5'h04);
           header_reader_active <= 0;
           command_processor_state <= CP_ACTI;
         end else
@@ -374,6 +375,8 @@ end
 reg   [7:0] rr_uart_d;
 reg         rr_uart_e;
 
+reg         got_address;
+
 reg   [3:0] state       = 0;
 localparam  IDLE        = 0;
 localparam  READ        = 1;
@@ -401,6 +404,7 @@ always @(posedge i_clk) begin
     mem_enable <= 1;
     rr_uart_d <= 0;
     rr_uart_e <= 0;
+    got_address <= 0;
   end
   else begin
     case (state)
@@ -482,6 +486,8 @@ always @(posedge i_clk) begin
           eth_frame_load_addr <= 0;
           eth_frame_send_addr <= mem_writes_counter;
           cp_force_address_request <= 0;
+          if (command == 5'h04)
+            got_address <= 1;
           if (p_type[4]) begin
             state <= IDLE;
             // ready ack command
