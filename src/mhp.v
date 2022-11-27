@@ -470,7 +470,6 @@ always @(posedge i_clk) begin
         end
       end
       PROCESSING: begin
-          e_enable_data_set <= 0;
           eth_frame_load_addr <= 0;
           eth_frame_send_addr <= mem_writes_counter;
           cp_force_address_request <= 0;
@@ -499,7 +498,7 @@ always @(posedge i_clk) begin
         end
       end
       WAIT_FOR_TCHANGE: begin
-        if (eth_frame_send_addr == r_time[7:0]) begin // [29:20]) begin // [17:8]
+        if (eth_frame_send_addr != r_time[7:0]) begin // [29:20]) begin // [17:8]
           done <= 1;
           state <= PREPARE;
           cp_force_address_request <= 1;
