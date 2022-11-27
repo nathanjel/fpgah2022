@@ -4,11 +4,14 @@ INFO: [VRFC 10-2263] Analyzing Verilog file "F:/home/nathan/workspaces/fpgah2022
 INFO: [VRFC 10-311] analyzing module control
 INFO: [VRFC 10-2263] Analyzing Verilog file "F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/mhp.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module mhp
-WARNING: [VRFC 10-8497] literal value 'hffe truncated to fit in 11 bits [F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/mhp.v:513]
-WARNING: [VRFC 10-3380] identifier 'p_size' is used before its declaration [F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/mhp.v:199]
+WARNING: [VRFC 10-8497] literal value 'hffe truncated to fit in 11 bits [F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/mhp.v:573]
+WARNING: [VRFC 10-3380] identifier 'p_size' is used before its declaration [F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/mhp.v:203]
+WARNING: [VRFC 10-3380] identifier 'p_size' is used before its declaration [F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/mhp.v:204]
+WARNING: [VRFC 10-3380] identifier 'p_size' is used before its declaration [F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/mhp.v:208]
+WARNING: [VRFC 10-3380] identifier 'p_calc_output' is used before its declaration [F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/mhp.v:218]
+WARNING: [VRFC 10-3380] identifier 'p_calc_output' is used before its declaration [F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/mhp.v:219]
+WARNING: [VRFC 10-3380] identifier 'p_size' is used before its declaration [F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/mhp.v:222]
 INFO: [VRFC 10-2263] Analyzing Verilog file "F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/scs.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module scs
 INFO: [VRFC 10-2263] Analyzing Verilog file "F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/task_manager.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module task_manager
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/fpgah2022.srcs/sim_1/new/msimv.sv" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module msim

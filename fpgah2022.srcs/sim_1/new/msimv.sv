@@ -332,7 +332,214 @@ initial begin
       // #100 i_eth_rready <= 0;
     end
     // wait for ready shit
-    #20000 i_eth_rready <= 0;
+    #50000 i_eth_rready <= 0;
+
+
+    // send calc plus
+    // send calc
+    // send calc
+    // send calc
+    // send calc
+    // send calc
+    #20 i_eth_rdata <= 8'h0e;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h12;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h34;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'hab;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'hcd;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h00;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h05;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h0d;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h10;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h00;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h02;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h00;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h02;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'hcc;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'hcc;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+
+#30000 i_eth_rready <= 0;
+    // send calc minus
+    // send calc
+    // send calc
+    // send calc
+    // send calc
+    // send calc
+    #20 i_eth_rdata <= 8'h0e;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h12;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h34;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'hab;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'hcd;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h00;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h05;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h0d;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h20;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h00;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h02;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h00;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h02;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'hcc;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'hcc;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+#30000 i_eth_rready <= 0;
+
+
+   // send calc mul
+    // send calc
+    // send calc
+    // send calc
+    // send calc
+    // send calc
+    #20 i_eth_rdata <= 8'h0e;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h12;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h34;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'hab;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'hcd;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h00;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h05;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h0d;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h30;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h00;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h02;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h00;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h02;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'hcc;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'hcc;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+#30000 i_eth_rready <= 0;
+
 end
 
 

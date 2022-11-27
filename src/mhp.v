@@ -166,14 +166,17 @@ always @(posedge i_clk) begin
         8'b01000010: mem_write_for_set <= 8'h00;
         8'b01000011: mem_write_for_set <= 8'h00;
         8'b01000100: mem_write_for_set <= 8'h00;
-        8'b01000101: mem_write_for_set <= 8'h03;
+        8'b01000101: mem_write_for_set <= 8'h06;
         8'b01000110: mem_write_for_set <= 8'h92;
-        8'b01000111: mem_write_for_set <= 8'h02;
+        8'b01000111: mem_write_for_set <= 8'h05;
         8'b01001000: mem_write_for_set <= 8'h20;
         8'b01001001: mem_write_for_set <= 8'h30;
-        8'b01001010: mem_write_for_set <= 8'h00;
-        8'b01001011: mem_write_for_set <= 8'h00;
-        8'b01001100: begin
+        8'b01001010: mem_write_for_set <= 8'h60;
+        8'b01001011: mem_write_for_set <= 8'h61;
+        8'b01001100: mem_write_for_set <= 8'h62;
+        8'b01001101: mem_write_for_set <= 8'h00;
+        8'b01001110: mem_write_for_set <= 8'h00;
+        8'b01001111: begin
           data_set_complete <= 1;
           mem_writes_counter <= mem_address_for_set;
         end
@@ -194,7 +197,27 @@ always @(posedge i_clk) begin
         end
         // echo response
         8'b01010000: mem_write_for_set <= 8'hff;
-        8'b01010001: begin
+        8'b01010001: mem_write_for_set <= 8'hff;
+        8'b01010010: mem_write_for_set <= 8'hff;
+        8'b01010011: mem_write_for_set <= 8'hff;
+        8'b01010100: mem_write_for_set <= p_size[15:8];
+        8'b01010101: mem_write_for_set <= p_size[7:0];
+        8'b01010110: mem_write_for_set <= 8'h85;
+        8'b01010111: begin
+          data_set_complete <= 1;
+          mem_writes_counter <= p_size[ADDRESS_LINE_SIZE-1:0] + 9;
+        end
+        // calc response
+        8'b11010000: mem_write_for_set <= 8'hff;
+        8'b11010001: mem_write_for_set <= 8'hff;
+        8'b11010010: mem_write_for_set <= 8'hff;
+        8'b11010011: mem_write_for_set <= 8'hff;
+        8'b11010100: mem_write_for_set <= 8'h00;
+        8'b11010101: mem_write_for_set <= 8'h02;
+        8'b11010110: mem_write_for_set <= 8'h8e;
+        8'b11010111: mem_write_for_set <= p_calc_output[15:8];
+        8'b11011000: mem_write_for_set <= p_calc_output[7:0];
+        8'b11011001: begin
           data_set_complete <= 1;
           mem_writes_counter <= p_size[ADDRESS_LINE_SIZE-1:0] + 9;
         end
@@ -238,6 +261,10 @@ reg   [15:0]  p_src_addr;
 reg   [15:0]  p_size;
 reg   [7:0]   p_d_type;
 reg   [15:0]  p_scs;
+reg   [7:0]   p_operand;
+reg signed   [15:0]   p_para1;
+reg signed   [15:0]   p_para2;
+reg signed   [15:0]   p_calc_output;
 
 reg   [3:0] header_reader_state;
 localparam HRW_INIT = 0;
@@ -255,6 +282,10 @@ always @(posedge i_clk ) begin
      p_size <= 0;
      p_d_type <= 0;
      p_scs <= 0;
+     p_operand <= 0;
+     p_para1 <= 0;
+     p_para2 <= 0;
+     p_calc_output <= 0;
      header_reader_state <= HRW_INIT;
      header_address_driver <= 0;
   end else begin
@@ -269,16 +300,21 @@ always @(posedge i_clk ) begin
             header_reader_state <= HRW_LOAD;
           end
           HRW_LOAD: begin
-            case (header_address_driver[2:0])
-              3'b000: p_src_addr[15:8] <= mem_read;
-              3'b001: p_src_addr[7:0] <= mem_read;
-              3'b010: p_dst_addr[15:8] <= mem_read;
-              3'b011: p_dst_addr[7:0] <= mem_read;
-              3'b100: p_size[15:8] <= mem_read;
-              3'b101: p_size[7:0] <= mem_read;
-              3'b110: p_d_type[7:0] <= mem_read;
+            case (header_address_driver[3:0])
+              4'b0000: p_src_addr[15:8] <= mem_read;
+              4'b0001: p_src_addr[7:0] <= mem_read;
+              4'b0010: p_dst_addr[15:8] <= mem_read;
+              4'b0011: p_dst_addr[7:0] <= mem_read;
+              4'b0100: p_size[15:8] <= mem_read;
+              4'b0101: p_size[7:0] <= mem_read;
+              4'b0110: p_d_type[7:0] <= mem_read;
+              4'b0111: p_operand[7:0] <= mem_read;
+              4'b1000: p_para1[15:8] <= mem_read;
+              4'b1001: p_para1[7:0] <= mem_read;
+              4'b1010: p_para2[15:8] <= mem_read;
+              4'b1011: p_para2[7:0] <= mem_read;
             endcase
-            if (header_address_driver == 3'b110)
+            if (header_address_driver == 4'b1011)
               header_reader_state <= HRW_DONE;
             else
               header_reader_state <= HRW_INC;
@@ -349,6 +385,26 @@ end
 //   end
 // end
 
+reg [3:0] calculator_state;
+always @(posedge i_clk) begin
+  if(i_rst) begin
+    calculator_state <= 0;
+  end else begin
+    case(calculator_state)
+      0: begin
+        if (p_operand == 8'h10) begin
+          p_calc_output <= p_para1 + p_para2;
+        end
+        if (p_operand == 8'h20) begin
+          p_calc_output <= p_para1 - p_para2;
+        end
+        if (p_operand == 8'h30) begin
+          p_calc_output <= p_para1 * p_para2;
+        end
+      end
+    endcase 
+  end
+end
 // command processor
 reg         cp_force_address_request;
 reg         command_processor_active;
@@ -396,7 +452,11 @@ always @(posedge i_clk) begin
         if (p_type[4]) begin
           command_processor_state <= CP_DONE;
         end else begin
-          command_processor_state <= CP_LOAD;
+          if (p_type == 7'h0d) begin
+            command_processor_state <= CP_LOAD;            
+          end else begin
+            command_processor_state <= CP_LOAD;
+          end
         end
       end
       CP_LOAD: begin

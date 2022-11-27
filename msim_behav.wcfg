@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="61.500 ns"></ZoomStartTime>
-      <ZoomEndTime time="892.501 ns"></ZoomEndTime>
-      <Cursor1Time time="210.000 ns"></Cursor1Time>
+      <ZoomStartTime time="165.833333 us"></ZoomStartTime>
+      <ZoomEndTime time="1,166.833334 us"></ZoomEndTime>
+      <Cursor1Time time="335.720188 us"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="444"></NameColumnWidth>
+      <NameColumnWidth column_width="437"></NameColumnWidth>
       <ValueColumnWidth column_width="102"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="46" />
+   <WVObjectSize size="49" />
    <wave_markers>
       <marker time="400000000" label="" />
       <marker time="230000" label="" />
@@ -94,18 +94,13 @@
          <obj_property name="ObjectShortName">o_uart_wdata[7:0]</obj_property>
       </wvobject>
    </wvobject>
-   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/state" type="array">
-      <obj_property name="ElementShortName">state[3:0]</obj_property>
-      <obj_property name="ObjectShortName">state[3:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/eth_frame_load_addr" type="array">
-      <obj_property name="ElementShortName">eth_frame_load_addr[7:0]</obj_property>
-      <obj_property name="ObjectShortName">eth_frame_load_addr[7:0]</obj_property>
+      <obj_property name="ElementShortName">eth_frame_load_addr[10:0]</obj_property>
+      <obj_property name="ObjectShortName">eth_frame_load_addr[10:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/eth_frame_send_addr" type="array">
-      <obj_property name="ElementShortName">eth_frame_send_addr[7:0]</obj_property>
-      <obj_property name="ObjectShortName">eth_frame_send_addr[7:0]</obj_property>
+      <obj_property name="ElementShortName">eth_frame_send_addr[10:0]</obj_property>
+      <obj_property name="ObjectShortName">eth_frame_send_addr[10:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/r_counter_clock" type="array">
       <obj_property name="ElementShortName">r_counter_clock[31:0]</obj_property>
@@ -128,20 +123,20 @@
       <obj_property name="ObjectShortName">data_set_complete</obj_property>
    </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/mem_address" type="array">
-      <obj_property name="ElementShortName">mem_address[7:0]</obj_property>
-      <obj_property name="ObjectShortName">mem_address[7:0]</obj_property>
+      <obj_property name="ElementShortName">mem_address[10:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_address[10:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/mem_address_for_scs" type="array">
-      <obj_property name="ElementShortName">mem_address_for_scs[7:0]</obj_property>
-      <obj_property name="ObjectShortName">mem_address_for_scs[7:0]</obj_property>
+      <obj_property name="ElementShortName">mem_address_for_scs[10:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_address_for_scs[10:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/eth_frame_load_addr" type="array">
-      <obj_property name="ElementShortName">eth_frame_load_addr[7:0]</obj_property>
-      <obj_property name="ObjectShortName">eth_frame_load_addr[7:0]</obj_property>
+      <obj_property name="ElementShortName">eth_frame_load_addr[10:0]</obj_property>
+      <obj_property name="ObjectShortName">eth_frame_load_addr[10:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/header_address_driver" type="array">
-      <obj_property name="ElementShortName">header_address_driver[7:0]</obj_property>
-      <obj_property name="ObjectShortName">header_address_driver[7:0]</obj_property>
+      <obj_property name="ElementShortName">header_address_driver[10:0]</obj_property>
+      <obj_property name="ObjectShortName">header_address_driver[10:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/mem_write" type="array">
       <obj_property name="ElementShortName">mem_write[7:0]</obj_property>
@@ -152,8 +147,8 @@
       <obj_property name="ObjectShortName">mem_read[7:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/record_ram/ram_name" type="array">
-      <obj_property name="ElementShortName">ram_name[255:0][7:0]</obj_property>
-      <obj_property name="ObjectShortName">ram_name[255:0][7:0]</obj_property>
+      <obj_property name="ElementShortName">ram_name[2047:0][7:0]</obj_property>
+      <obj_property name="ObjectShortName">ram_name[2047:0][7:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/mem_write_enable" type="logic">
       <obj_property name="ElementShortName">mem_write_enable</obj_property>
@@ -166,6 +161,22 @@
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/command_processor_state" type="array">
       <obj_property name="ElementShortName">command_processor_state[4:0]</obj_property>
       <obj_property name="ObjectShortName">command_processor_state[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/p_operand" type="array">
+      <obj_property name="ElementShortName">p_operand[7:0]</obj_property>
+      <obj_property name="ObjectShortName">p_operand[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/p_para1" type="array">
+      <obj_property name="ElementShortName">p_para1[15:0]</obj_property>
+      <obj_property name="ObjectShortName">p_para1[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/p_para2" type="array">
+      <obj_property name="ElementShortName">p_para2[15:0]</obj_property>
+      <obj_property name="ObjectShortName">p_para2[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/p_calc_output" type="array">
+      <obj_property name="ElementShortName">p_calc_output[15:0]</obj_property>
+      <obj_property name="ObjectShortName">p_calc_output[15:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/p_dst_addr" type="array">
       <obj_property name="ElementShortName">p_dst_addr[15:0]</obj_property>
@@ -208,12 +219,12 @@
       <obj_property name="ObjectShortName">write_enable</obj_property>
    </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/cscalc/address" type="array">
-      <obj_property name="ElementShortName">address[7:0]</obj_property>
-      <obj_property name="ObjectShortName">address[7:0]</obj_property>
+      <obj_property name="ElementShortName">address[10:0]</obj_property>
+      <obj_property name="ObjectShortName">address[10:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/mem_writes_counter" type="array">
-      <obj_property name="ElementShortName">mem_writes_counter[7:0]</obj_property>
-      <obj_property name="ObjectShortName">mem_writes_counter[7:0]</obj_property>
+      <obj_property name="ElementShortName">mem_writes_counter[10:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_writes_counter[10:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/mem_writes_counter_minus_2" type="array">
       <obj_property name="ElementShortName">mem_writes_counter_minus_2[15:0]</obj_property>
