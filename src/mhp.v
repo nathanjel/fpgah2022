@@ -435,10 +435,11 @@ always @(posedge i_clk) begin
     case (state)
       IDLE: begin
         w_valid <= 0;
+        mem_write_for_read <= 0;
         mem_write_enable_for_read <= 0;
         command_processor_active <= 0;
         eth_frame_len <= 0;
-        eth_frame_load_addr <= 0;
+        eth_frame_load_addr <= 8'hff;
         eth_frame_send_addr <= 0;
         eth_rec_dead_cnt <= 0;
         if (i_rready) begin // received frame's payload ready
@@ -465,8 +466,9 @@ always @(posedge i_clk) begin
       //   end
       // end
       READ: begin
-        mem_write_enable_for_read <= 1;
+        mem_write_enable_for_read <= 0;
         mem_write_for_read <= i_rdata;
+        eth_frame_load_addr <= eth_frame_load_addr + 1;
         // rr_uart_d <= i_rdata;
         // rr_uart_e <= 0;
         r_req <= 0; // complete fifo
@@ -474,10 +476,9 @@ always @(posedge i_clk) begin
         eth_rec_dead_cnt <= 0;
       end
       READA: begin
+        mem_write_enable_for_read <= 1;
         // rr_uart_e <= 1 & ~(eth_rec_dead_cnt[5] | eth_rec_dead_cnt[4] | eth_rec_dead_cnt[3] | eth_rec_dead_cnt[2] | eth_rec_dead_cnt[1] | eth_rec_dead_cnt[0]) ;
-        mem_write_enable_for_read <= 0;
         if (i_rready) begin
-          eth_frame_load_addr <= eth_frame_load_addr + 1;
           state <= READ;
           r_req <= 1;
         end else begin
