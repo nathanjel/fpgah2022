@@ -26,7 +26,8 @@ reg [31:0]  r_counter_clock;
 wire        r_send_enabled;
 
 localparam CLOCK_DIVIDER = 50000000;
-
+localparam ADDRESS_LINE_SIZE = 11;
+// ADDRESS_LINE_SIZE-1
 always @(posedge i_clk) begin
   if (i_rst) begin
     r_time           <= 0;
@@ -62,15 +63,15 @@ wire          w_valid_u;
 // frame counter 
 // if its size is less than 42 bytes
 
-wire [7:0] mem_address_for_scs;
+wire [ADDRESS_LINE_SIZE-1:0] mem_address_for_scs;
 wire mem_write_enable_for_scs;
 wire [7:0] mem_write_for_scs;
 
-reg [7:0] mem_address_for_set;
+reg [ADDRESS_LINE_SIZE-1:0] mem_address_for_set;
 reg mem_write_enable_for_set;
 reg [7:0] mem_write_for_set;
 
-reg [7:0] mem_address_for_cmd;
+reg [ADDRESS_LINE_SIZE-1:0] mem_address_for_cmd;
 reg mem_write_enable_for_cmd;
 reg [7:0] mem_write_for_cmd;
 
@@ -80,7 +81,7 @@ reg mem_write_enable_for_read;
 reg [7:0] mem_write_for_read;
 
 wire mem_write_enable;
-wire [7:0] mem_address;
+wire [ADDRESS_LINE_SIZE-1:0] mem_address;
 wire [7:0] mem_write;
 wire [7:0] mem_read;
 wire scs_work_completed;
@@ -98,9 +99,9 @@ bram record_ram(
   .output_data (mem_read)
 );
 
-reg [7:0] eth_frame_len;
-reg [7:0] eth_frame_load_addr;
-reg [7:0] eth_frame_send_addr;
+reg [ADDRESS_LINE_SIZE-1:0] eth_frame_len;
+reg [ADDRESS_LINE_SIZE-1:0] eth_frame_load_addr;
+reg [ADDRESS_LINE_SIZE-1:0] eth_frame_send_addr;
 
 reg [5:0] eth_rec_dead_cnt;
 
@@ -120,7 +121,7 @@ localparam SETCONTROL_3 = 3;
 
 wire [7:0] set_control_wire;
 assign set_control_wire = {command[3:0], mem_address_for_set[3:0]};
-reg [7:0] mem_writes_counter;
+reg [ADDRESS_LINE_SIZE-1:0] mem_writes_counter;
 reg [15:0] mem_writes_counter_minus_2;
 
 scs cscalc(
@@ -165,13 +166,14 @@ always @(posedge i_clk) begin
         8'b01000010: mem_write_for_set <= 8'h00;
         8'b01000011: mem_write_for_set <= 8'h00;
         8'b01000100: mem_write_for_set <= 8'h00;
-        8'b01000101: mem_write_for_set <= 8'h02;
+        8'b01000101: mem_write_for_set <= 8'h03;
         8'b01000110: mem_write_for_set <= 8'h92;
-        8'b01000111: mem_write_for_set <= 8'h01;
+        8'b01000111: mem_write_for_set <= 8'h02;
         8'b01001000: mem_write_for_set <= 8'h20;
-        8'b01001001: mem_write_for_set <= 8'h00;
+        8'b01001001: mem_write_for_set <= 8'h30;
         8'b01001010: mem_write_for_set <= 8'h00;
-        8'b01001011: begin
+        8'b01001011: mem_write_for_set <= 8'h00;
+        8'b01001100: begin
           data_set_complete <= 1;
           mem_writes_counter <= mem_address_for_set;
         end
@@ -194,7 +196,7 @@ always @(posedge i_clk) begin
         8'b01010000: mem_write_for_set <= 8'hff;
         8'b01010001: begin
           data_set_complete <= 1;
-          mem_writes_counter <= p_size[7:0] + 9;
+          mem_writes_counter <= p_size[ADDRESS_LINE_SIZE-1:0] + 9;
         end
       endcase
       case (set_control_state)
@@ -230,7 +232,7 @@ end
 // address and command reader
 reg   header_reader_active;
 reg   header_reader_complete;
-reg   [7:0]   header_address_driver;
+reg   [ADDRESS_LINE_SIZE-1:0]   header_address_driver;
 reg   [15:0]  p_dst_addr;
 reg   [15:0]  p_src_addr;
 reg   [15:0]  p_size;
@@ -508,7 +510,7 @@ always @(posedge i_clk) begin
         mem_write_enable_for_read <= 0;
         command_processor_active <= 0;
         eth_frame_len <= 0;
-        eth_frame_load_addr <= 8'hfe;
+        eth_frame_load_addr <= 11'hffe;
         eth_frame_send_addr <= 0;
         eth_rec_dead_cnt <= 0;
         if (i_rready) begin // received frame's payload ready
@@ -638,7 +640,7 @@ always @(posedge i_clk) begin
           w_data <= 0;
         // eth_frame_load_addr <= eth_frame_load_addr + 1;
         // main_fsm_state <= WRITE_PORT_3;
-        if (eth_frame_load_addr == 8'h20) begin
+        if (eth_frame_load_addr == (eth_frame_send_addr+8)) begin
           main_fsm_state <= IDLE;
         end else begin
           main_fsm_state <= WRITE_PORT_1;

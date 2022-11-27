@@ -297,11 +297,11 @@ initial begin
     i_eth_rready <= 1;
     @(posedge o_eth_rreq);
     i_eth_rready <= 0;
-    #20 i_eth_rdata <= 8'h00;
+    #20 i_eth_rdata <= 8'h03;
     i_eth_rready <= 1;
     @(posedge o_eth_rreq);
     i_eth_rready <= 0;
-    #20 i_eth_rdata <= 8'h10;
+    #20 i_eth_rdata <= 8'he7;
     i_eth_rready <= 1;
     @(posedge o_eth_rreq);
     i_eth_rready <= 0;
@@ -309,7 +309,7 @@ initial begin
     i_eth_rready <= 1;
     @(posedge o_eth_rreq);
     i_eth_rready <= 0;
-    for (int i = 0; i < 16; i++) begin
+    for (int i = 0; i < 999; i++) begin
       #20 i_eth_rdata <= 64+i;
       i_eth_rready <= 1;
       @(posedge o_eth_rreq);
