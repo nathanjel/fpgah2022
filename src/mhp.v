@@ -566,7 +566,7 @@ always @(posedge i_clk) begin
       end
       WRITE_PORT_3: begin
         w_valid <= 1;
-        if (eth_frame_load_addr == 8'h32) begin
+        if (eth_frame_load_addr == 8'h10) begin
           state <= IDLE;
         end else begin
           state <= WRITE_PORT_1;
