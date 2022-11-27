@@ -454,6 +454,7 @@ always @(posedge i_clk) begin
       end
       READA: begin
         // rr_uart_e <= 1 & ~(eth_rec_dead_cnt[5] | eth_rec_dead_cnt[4] | eth_rec_dead_cnt[3] | eth_rec_dead_cnt[2] | eth_rec_dead_cnt[1] | eth_rec_dead_cnt[0]) ;
+        mem_write_enable_for_read <= 0;
         if (i_rready) begin
           eth_frame_load_addr <= eth_frame_load_addr + 1;
           state <= READ;
