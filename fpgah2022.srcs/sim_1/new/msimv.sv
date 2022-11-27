@@ -258,6 +258,65 @@ initial begin
     end
     // wait for ready shit
     #10000 i_eth_rready <= 0;
+
+    // send echo
+    // send echo
+    // send echo
+    // send echo
+    // send echo
+    // send echo
+    #100 i_eth_rdata <= 8'haa;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'haa;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'hbb;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'hbb;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'h00;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'h10;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'h05;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    for (int i = 0; i < 16; i++) begin
+      #100 i_eth_rdata <= 64+i;
+      i_eth_rready <= 1;
+      @(posedge o_eth_rreq);
+      i_eth_rready <= 0;
+      #100 i_eth_rready <= 0;
+    end
+    #100 i_eth_rdata <= 8'hcc;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #100 i_eth_rdata <= 8'hcc;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    for (int i = 0; i < 46; i++) begin
+      #100 i_eth_rdata <= i;
+      i_eth_rready <= 1;
+      @(posedge o_eth_rreq);
+      i_eth_rready <= 0;
+      #100 i_eth_rready <= 0;
+    end
+    // wait for ready shit
+    #10000 i_eth_rready <= 0;
 end
 
 

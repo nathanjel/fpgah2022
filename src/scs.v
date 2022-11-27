@@ -22,6 +22,7 @@ module scs
 	reg	[15:0] scs_out;
 	
 	wire  last_byte;
+	wire  pre_last_byte;
 
 	localparam    RESET     = 0;
 	localparam	  READY     = 1;
@@ -73,7 +74,8 @@ module scs
 	      			state <= last_byte ? LOADA : STEP1A;
 	      		end
 	      		STEP1A: begin
-	      			scs_out <= scs_out + mem_output;
+	      			if (pre_last_byte)
+	      				scs_out <= scs_out + mem_output;
 	      			address <= address + 1;
 	      			state <= STEP2;
 	      		end
@@ -81,7 +83,8 @@ module scs
 	      			state <= last_byte ? LOADA : STEP2A;
 	      		end
 	      		STEP2A: begin
-	      			scs_out <= scs_out + {mem_output, 1'b0};
+	      			if (pre_last_byte)
+	      				scs_out <= scs_out + {mem_output, 1'b0};
 	      			address <= address + 1;
 	      			state <= STEP3;
 	      		end
@@ -89,7 +92,8 @@ module scs
 	      			state <= last_byte ? LOADA : STEP3A;
 	      		end
 	      		STEP3A: begin
-	      			scs_out <= scs_out + {mem_output, 2'b0};
+	      			if (pre_last_byte)
+	      				scs_out <= scs_out + {mem_output, 2'b0};
 	      			address <= address + 1;
 	      			state <= STEP4;
 	      		end
@@ -97,7 +101,8 @@ module scs
 	      			state <= last_byte ? LOADA : STEP4A;
 	      		end
 	      		STEP4A: begin
-	      			scs_out <= scs_out + {mem_output, 3'b0};
+	      			if (pre_last_byte)
+	      				scs_out <= scs_out + {mem_output, 3'b0};
 	      			address <= address + 1;
 	      			state <= STEP1;
 	      		end
@@ -126,5 +131,6 @@ module scs
       end
 
 assign last_byte = payload_len == address;
+assign pre_last_byte = (payload_len-1) == address;
 
 endmodule
