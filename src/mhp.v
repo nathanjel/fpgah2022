@@ -285,7 +285,7 @@ always @(posedge i_clk ) begin
      p_operand <= 0;
      p_para1 <= 0;
      p_para2 <= 0;
-     p_calc_output <= 0;
+     // p_calc_output <= 0;
      header_reader_state <= HRW_INIT;
      header_address_driver <= 0;
   end else begin
