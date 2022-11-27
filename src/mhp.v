@@ -90,6 +90,7 @@ reg mem_ready_for_scs;
 
 bram record_ram(
   .clock(i_clk),
+  .reset       (i_rst),
   .ram_enable(mem_enable),
   .write_enable(mem_write_enable),
   .address     (mem_address),
