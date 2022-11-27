@@ -4,7 +4,7 @@ INFO: [VRFC 10-2263] Analyzing Verilog file "F:/home/nathan/workspaces/fpgah2022
 INFO: [VRFC 10-311] analyzing module control
 INFO: [VRFC 10-2263] Analyzing Verilog file "F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/mhp.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module mhp
-WARNING: [VRFC 10-3380] identifier 'got_address' is used before its declaration [F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/mhp.v:312]
+WARNING: [VRFC 10-3380] identifier 'got_address' is used before its declaration [F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/mhp.v:316]
 INFO: [VRFC 10-2263] Analyzing Verilog file "F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/scs.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module scs
 INFO: [VRFC 10-2263] Analyzing Verilog file "F:/home/nathan/workspaces/fpgah2022/sources/fpgah2022/src/task_manager.v" into library xil_defaultlib

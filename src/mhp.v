@@ -279,7 +279,7 @@ end
 // command processor
 reg         cp_force_address_request;
 reg         command_processor_active;
-reg   [3:0] command_processor_state;
+reg   [4:0] command_processor_state;
 localparam CP_INIT = 0;
 localparam CP_HEAD = 1;
 localparam CP_ACTI = 2;
@@ -288,6 +288,10 @@ localparam CP_FILL1 = 4;
 localparam CP_FILL2 = 5;
 localparam CP_FILL3 = 6;
 localparam CP_FILL4 = 7;
+localparam CP_FILL1A = 10;
+localparam CP_FILL2A = 11;
+localparam CP_FILL3A = 12;
+localparam CP_FILL4A = 13;
 localparam CP_FILLS = 8;
 localparam CP_DONE = 9;
 always @(posedge i_clk) begin
@@ -330,30 +334,46 @@ always @(posedge i_clk) begin
           e_enable_data_set <= 1;
       end
       CP_FILL1: begin
-        command_processor_state <= CP_FILL2;
+        command_processor_state <= CP_FILL1A;
         mem_address_for_cmd <= 8'h00;
         mem_write_for_cmd <= p_dst_addr[15:8];
+      end
+      CP_FILL1A: begin
+        command_processor_state <= CP_FILL2;
         mem_write_enable_for_cmd <= 1;
       end
       CP_FILL2: begin
-        command_processor_state <= CP_FILL3;
+        mem_write_enable_for_cmd <= 0;
         mem_address_for_cmd <= 8'h01;
         mem_write_for_cmd <= p_dst_addr[7:0];
+        command_processor_state <= CP_FILL2A;
+      end
+      CP_FILL2A: begin
         mem_write_enable_for_cmd <= 1;
+        command_processor_state <= CP_FILL3;
       end
       CP_FILL3: begin
+        mem_write_enable_for_cmd <= 0;
         mem_address_for_cmd <= 8'h02;
         mem_write_for_cmd <= p_src_addr[15:8];
+        command_processor_state <= CP_FILL3A;
+      end
+      CP_FILL3A: begin
         mem_write_enable_for_cmd <= 1;
         command_processor_state <= CP_FILL4;
       end
       CP_FILL4: begin
+        mem_write_enable_for_cmd <= 0;
         mem_address_for_cmd <= 8'h03;
         mem_write_for_cmd <= p_src_addr[7:0];
+        command_processor_state <= CP_FILL4A;        
+      end
+      CP_FILL4A: begin
         mem_write_enable_for_cmd <= 1;
         command_processor_state <= CP_FILLS;
       end
       CP_FILLS: begin
+        mem_write_enable_for_cmd <= 0;
         mem_write_for_cmd <= 0;
         mem_address_for_cmd <= 0;
         mem_write_enable_for_cmd <= 0;        
