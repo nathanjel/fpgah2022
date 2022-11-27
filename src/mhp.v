@@ -371,6 +371,9 @@ always @(posedge i_clk) begin
 end
 
 // the machine
+reg   [7:0] rr_uart_d;
+reg         rr_uart_e;
+
 reg   [3:0] state       = 0;
 localparam  IDLE        = 0;
 localparam  READ        = 1;
@@ -432,11 +435,14 @@ always @(posedge i_clk) begin
       READ: begin
         mem_write_enable_for_read <= 0;
         mem_write_for_read <= i_rdata;
+        rr_uart_d <= i_rdata;
+        rr_uart_e <= 0;
         r_req <= 0; // complete fifo
         state <= READA; // continue reading
         eth_rec_dead_cnt <= 0;
       end
       READA: begin
+        rr_uart_e <= 1 & ~(eth_rec_dead_cnt[5] | eth_rec_dead_cnt[4] | eth_rec_dead_cnt[3] | eth_rec_dead_cnt[2] | eth_rec_dead_cnt[1] | eth_rec_dead_cnt[0]) ;
         mem_write_enable_for_read <= 1;
         if (i_rready) begin
           eth_frame_load_addr <= eth_frame_load_addr + 1;
@@ -449,7 +455,7 @@ always @(posedge i_clk) begin
         end  
       end
       READCOMPLETE: begin
-        state <= IDLE;
+        rr_uart_e <= 0;
         eth_frame_load_addr <= 0;
         eth_frame_send_addr <= 0;
         eth_frame_len <= eth_frame_load_addr;
@@ -542,8 +548,8 @@ assign    o_rreq   = r_req;
 assign    o_wdata  = w_data;
 assign    o_wvalid = w_valid;
 
-assign    o_wdata_u  = w_data_u;
-assign    o_wvalid_u = w_valid_u;
+assign    o_wdata_u  = w_data_u | rr_uart_d;
+assign    o_wvalid_u = w_valid_u | rr_uart_e;
 
 assign    p_direction = p_d_type[7];
 assign    p_type = p_d_type[6:0];
