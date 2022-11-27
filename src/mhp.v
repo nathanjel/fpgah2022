@@ -323,7 +323,7 @@ always @(posedge i_clk) begin
       CP_LOAD: begin
         if (data_set_complete) begin
           e_enable_data_set <= 0;
-          command_processor_state <= CP_FILL1;
+          command_processor_state <= cp_force_address_request ? CP_DONE : CP_FILL1;
           mem_writes_counter_minus_2 <= mem_writes_counter - 2;
         end else
           e_enable_data_set <= 1;
