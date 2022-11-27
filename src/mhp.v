@@ -540,7 +540,7 @@ always @(posedge i_clk) begin
         end
       end
       WAIT_FOR_TCHANGE: begin
-        if (eth_frame_send_addr != r_time[7:0]) begin // [29:20]) begin // [17:8]
+        if (i_wready) begin // [29:20]) begin // [17:8]
           done <= 1;
           state <= PREPARE;
           cp_force_address_request <= 1;
@@ -562,15 +562,15 @@ always @(posedge i_clk) begin
         else
           w_data <= 0;
         // eth_frame_load_addr <= eth_frame_load_addr + 1;
-        state <= WRITE_PORT_3;
-      end
-      WRITE_PORT_3: begin
-        w_valid <= 1;
+        // state <= WRITE_PORT_3;
+          w_valid <= 1;
         if (eth_frame_load_addr == 8'h10) begin
           state <= IDLE;
         end else begin
           state <= WRITE_PORT_1;
         end
+      end
+      WRITE_PORT_3: begin
       end 
     endcase
   end
