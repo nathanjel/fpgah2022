@@ -97,7 +97,7 @@ initial begin
       i_eth_rready <= 0;
       // #100 i_eth_rready <= 0;
     end
-    #10000 i_eth_rready <= 0;
+    #20000 i_eth_rready <= 0;
     // wait for address req
     // send address data
     #20 i_eth_rdata <= 8'h12;
@@ -152,7 +152,7 @@ initial begin
       // #100 i_eth_rready <= 0;
     end
     // wait for ready shit
-    #10000 i_eth_rready <= 0;
+    #20000 i_eth_rready <= 0;
     // send ready ack
     // send ready ack
     // send ready ack
@@ -202,7 +202,7 @@ initial begin
       // #100 i_eth_rready <= 0;
     end
     // wait for ready shit
-    #10000 i_eth_rready <= 0;
+    #20000 i_eth_rready <= 0;
     // send ping
     // send ping
     // send ping
@@ -257,7 +257,7 @@ initial begin
       // #100 i_eth_rready <= 0;
     end
     // wait for ready shit
-    #10000 i_eth_rready <= 0;
+    #20000 i_eth_rready <= 0;
 
     // send echo
     // send echo
@@ -316,7 +316,7 @@ initial begin
       // #100 i_eth_rready <= 0;
     end
     // wait for ready shit
-    #10000 i_eth_rready <= 0;
+    #20000 i_eth_rready <= 0;
 end
 
 

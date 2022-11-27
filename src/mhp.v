@@ -41,7 +41,7 @@ always @(posedge i_clk) begin
   end
 end
 
-assign r_send_enabled = (r_counter_clock[5:0] == 6'b111111);
+assign r_send_enabled = (r_counter_clock[9:0] == 10'b1111111111);
 
 //////////////////////////
 ////// CLOCK
@@ -408,7 +408,7 @@ reg         rr_uart_e;
 
 
 
-reg   [3:0] state       = 0;
+reg   [3:0] main_fsm_state       = 0;
 localparam  IDLE        = 0;
 localparam  READ        = 1;
 localparam  READA        = 2;
@@ -431,14 +431,14 @@ always @(posedge i_clk) begin
     done    <= 0;
     w_data  <= 0;
     w_valid <= 0;
-    state   <= IDLE;
+    main_fsm_state   <= IDLE;
     mem_enable <= 1;
     rr_uart_d <= 0;
     rr_uart_e <= 0;
     got_address <= 0;
   end
   else begin
-    case (state)
+    case (main_fsm_state)
       IDLE: begin
         w_valid <= 0;
         w_data <= 0;
@@ -450,8 +450,8 @@ always @(posedge i_clk) begin
         eth_frame_send_addr <= 0;
         eth_rec_dead_cnt <= 0;
         if (i_rready) begin // received frame's payload ready
-          r_req   <= 1;     // r_req set before read state, so we can expect valid data in READ state
-          state   <= READ;
+          r_req   <= 1;     // r_req set before read main_fsm_state, so we can expect valid data in READ main_fsm_state
+          main_fsm_state   <= READ;
         end else
           r_req   <= 0;
       end
@@ -462,14 +462,14 @@ always @(posedge i_clk) begin
       //     w_data_u <= i_rdata;
       //     r_req   <= 0;
       //     done    <= 1;
-      //     state   <= WRITE;  
+      //     main_fsm_state   <= WRITE;  
       //   end
       // end
       // WRITE: begin    //  write data
       //   if (i_wready) begin
       //     w_valid_u <= 1;
       //     w_valid <= 1;
-      //     state   <= IDLE;
+      //     main_fsm_state   <= IDLE;
       //   end
       // end
       READ: begin
@@ -479,19 +479,19 @@ always @(posedge i_clk) begin
         rr_uart_d <= i_rdata;
         rr_uart_e <= 0;
         r_req <= 0; // complete fifo
-        state <= READA; // continue reading
+        main_fsm_state <= READA; // continue reading
         eth_rec_dead_cnt <= 0;
       end
       READA: begin
         mem_write_enable_for_read <= 1;
         rr_uart_e <= 1 & ~(eth_rec_dead_cnt[5] | eth_rec_dead_cnt[4] | eth_rec_dead_cnt[3] | eth_rec_dead_cnt[2] | eth_rec_dead_cnt[1] | eth_rec_dead_cnt[0]) ;
         if (i_rready) begin
-          state <= READ;
+          main_fsm_state <= READ;
           r_req <= 1;
         end else begin
           eth_rec_dead_cnt <= eth_rec_dead_cnt + 1;
           if (eth_rec_dead_cnt == 6'b111110)
-            state <= READCOMPLETE;
+            main_fsm_state <= READCOMPLETE;
         end  
       end
       READCOMPLETE: begin
@@ -504,66 +504,70 @@ always @(posedge i_clk) begin
         if (done == 0) begin
           if (i_wready & r_send_enabled) begin
             eth_frame_send_addr <= 0;
-            state <= PING_REPLY_1;
+            main_fsm_state <= PING_REPLY_1;
           end
         end else begin
-          state <= PREPARE;
+          main_fsm_state <= PREPARE;
         end
       end
       PREPARE: begin
         if (command_processor_state == CP_DONE) begin
-          state <= PROCESSING;
+          main_fsm_state <= PROCESSING;
           command_processor_active <= 0;
         end else begin 
           command_processor_active <= 1;
         end
       end
       PROCESSING: begin
-          eth_frame_load_addr <= 0;
+          eth_frame_load_addr <= 8'h00;
           eth_frame_send_addr <= mem_writes_counter;
           cp_force_address_request <= 0;
           if (command == 5'h04)
             got_address <= 1;
           if (p_type[4]) begin
-            state <= IDLE;
+            main_fsm_state <= IDLE;
             // ready ack command
           end else begin
             if (i_wready & r_send_enabled)
-              state <= WRITE_PORT_1;
+              main_fsm_state <= WRITE_PORT_1;
           end
       end
       PING_REPLY_1: begin
         w_data <= 0;
         w_valid <= 0;
-        state <= PING_REPLY_2;
+        main_fsm_state <= PING_REPLY_2;
         // eth_frame_send_addr <= eth_frame_send_addr + 1;
       end
       PING_REPLY_2: begin
         w_valid <= 1;
         // if (eth_frame_send_addr != eth_frame_len) begin
-        //   state <= PING_REPLY_1;
+        //   main_fsm_state <= PING_REPLY_1;
         // end else begin
         //   eth_frame_send_addr <= r_time[7:0]; // [29:20];  // [17:8]
-        state <= WAIT_FOR_TCHANGE;
+        main_fsm_state <= WAIT_FOR_TCHANGE;
         // end
       end
       WAIT_FOR_TCHANGE: begin
         w_valid <= 0;
         if (i_wready) begin // [29:20]) begin // [17:8]
           done <= 1;
-          state <= PREPARE;
+          main_fsm_state <= PREPARE;
           cp_force_address_request <= 1;
         end
       end
       WRITE_PORT_1: begin
-        w_valid <= 0;
+        if (eth_frame_load_addr == 8'h00)
+          w_valid <= 0;
+        else
+          w_valid <= 1;
         // mem_address_for_send <= eth_frame_load_addr;
-        state <= WRITE_PORT_2;
+        main_fsm_state <= WRITE_PORT_2;
       end 
       WRITE_PORT_2: begin
+        w_valid <= 0;
         eth_frame_load_addr <= eth_frame_load_addr + 1;
         // eth_frame_load_addr <= eth_frame_load_addr + 1;
-        state <= WRITE_PORT_21;
+        main_fsm_state <= WRITE_PORT_21;
       end
       WRITE_PORT_21: begin
         if (eth_frame_load_addr <= eth_frame_send_addr)
@@ -571,12 +575,11 @@ always @(posedge i_clk) begin
         else
           w_data <= 0;
         // eth_frame_load_addr <= eth_frame_load_addr + 1;
-        // state <= WRITE_PORT_3;
-          w_valid <= 1;
+        // main_fsm_state <= WRITE_PORT_3;
         if (eth_frame_load_addr == 8'h10) begin
-          state <= IDLE;
+          main_fsm_state <= IDLE;
         end else begin
-          state <= WRITE_PORT_1;
+          main_fsm_state <= WRITE_PORT_1;
         end
       end
       WRITE_PORT_3: begin
