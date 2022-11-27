@@ -399,6 +399,8 @@ always @(posedge i_clk) begin
     w_valid <= 0;
     state   <= IDLE;
     mem_enable <= 1;
+    rr_uart_d <= 0;
+    rr_uart_e <= 0;
   end
   else begin
     case (state)
@@ -456,6 +458,7 @@ always @(posedge i_clk) begin
       end
       READCOMPLETE: begin
         rr_uart_e <= 0;
+        rr_uart_d <= 0;
         eth_frame_load_addr <= 0;
         eth_frame_send_addr <= 0;
         eth_frame_len <= eth_frame_load_addr;
