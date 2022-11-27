@@ -23,6 +23,8 @@ module mhp(
 //////////////////////////
 reg [31:0]  r_time;
 reg [31:0]  r_counter_clock;
+wire        r_send_enabled;
+
 localparam CLOCK_DIVIDER = 50000000;
 
 always @(posedge i_clk) begin
@@ -38,6 +40,9 @@ always @(posedge i_clk) begin
       r_counter_clock <= r_counter_clock + 1;
   end
 end
+
+assign r_send_enabled = (r_counter_clock[5:0] == 6'b111111);
+
 //////////////////////////
 ////// CLOCK
 //////////////////////////
@@ -497,7 +502,7 @@ always @(posedge i_clk) begin
         mem_write_for_read <= 0;
         mem_write_enable_for_read <= 0;
         if (done == 0) begin
-          if (i_wready) begin
+          if (i_wready & r_send_enabled) begin
             eth_frame_send_addr <= 0;
             state <= PING_REPLY_1;
           end
@@ -523,26 +528,27 @@ always @(posedge i_clk) begin
             state <= IDLE;
             // ready ack command
           end else begin
-            if (i_wready)
+            if (i_wready & r_send_enabled)
               state <= WRITE_PORT_1;
           end
       end
       PING_REPLY_1: begin
         w_data <= 0;
-        w_valid <= 1;
+        w_valid <= 0;
         state <= PING_REPLY_2;
-        eth_frame_send_addr <= eth_frame_send_addr + 1;
+        // eth_frame_send_addr <= eth_frame_send_addr + 1;
       end
       PING_REPLY_2: begin
-        w_valid <= 0;
-        if (eth_frame_send_addr != eth_frame_len) begin
-          state <= PING_REPLY_1;
-        end else begin
-          eth_frame_send_addr <= r_time[7:0]; // [29:20];  // [17:8]
-          state <= WAIT_FOR_TCHANGE;
-        end
+        w_valid <= 1;
+        // if (eth_frame_send_addr != eth_frame_len) begin
+        //   state <= PING_REPLY_1;
+        // end else begin
+        //   eth_frame_send_addr <= r_time[7:0]; // [29:20];  // [17:8]
+        state <= WAIT_FOR_TCHANGE;
+        // end
       end
       WAIT_FOR_TCHANGE: begin
+        w_valid <= 0;
         if (i_wready) begin // [29:20]) begin // [17:8]
           done <= 1;
           state <= PREPARE;
