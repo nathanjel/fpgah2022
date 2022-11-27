@@ -346,6 +346,7 @@ always @(posedge i_clk) begin
         mem_write_enable_for_cmd <= 0;
         mem_address_for_cmd <= 8'h01;
         mem_write_for_cmd <= p_dst_addr[7:0];
+        mem_write_enable_for_cmd <= 1;
         command_processor_state <= CP_FILL2A;
       end
       CP_FILL2A: begin
@@ -397,11 +398,10 @@ reg         rr_uart_e;
 
 reg         got_address;
 
-reg   [4:0] state       = 0;
+reg   [3:0] state       = 0;
 localparam  IDLE        = 0;
 localparam  READ        = 1;
 localparam  READA        = 2;
-localparam  READB        = 16;
 localparam  READCOMPLETE  = 3;
 localparam  WRITE       = 4;
 localparam  WRITEA       = 5;
@@ -465,16 +465,12 @@ always @(posedge i_clk) begin
         // rr_uart_d <= i_rdata;
         // rr_uart_e <= 0;
         r_req <= 0; // complete fifo
-        state <= READB; // continue reading
+        state <= READA; // continue reading
         eth_rec_dead_cnt <= 0;
-      end
-      READB: begin
-        mem_write_enable_for_read <= 1;
-        state <= READA;
       end
       READA: begin
         // rr_uart_e <= 1 & ~(eth_rec_dead_cnt[5] | eth_rec_dead_cnt[4] | eth_rec_dead_cnt[3] | eth_rec_dead_cnt[2] | eth_rec_dead_cnt[1] | eth_rec_dead_cnt[0]) ;
-        mem_write_enable_for_read <= 0;
+        mem_write_enable_for_read <= 1;
         if (i_rready) begin
           eth_frame_load_addr <= eth_frame_load_addr + 1;
           state <= READ;
