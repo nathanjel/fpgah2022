@@ -190,6 +190,12 @@ always @(posedge i_clk) begin
           data_set_complete <= 1;
           mem_writes_counter <= mem_address_for_set;
         end
+        // echo response
+        8'b01010000: mem_write_for_set <= 8'hff;
+        8'b01010001: begin
+          data_set_complete <= 1;
+          mem_writes_counter <= p_size[7:0] + 9;
+        end
       endcase
       case (set_control_state)
         SETCONTROL_RESET: begin
@@ -253,7 +259,7 @@ always @(posedge i_clk ) begin
      // if (header_reader_active) begin
        case (header_reader_state)
           HRW_INIT: begin
-            header_address_driver <= header_reader_state ? 1 : 0; // dirty hack for 0e
+            header_address_driver <= header_reader_state ? 0 : 0; // dirty hack for 0e
             if (header_reader_active)
               header_reader_state <= HRW_ADDR;
           end
@@ -262,15 +268,15 @@ always @(posedge i_clk ) begin
           end
           HRW_LOAD: begin
             case (header_address_driver[2:0])
-              3'b001: p_src_addr[15:8] <= mem_read;
-              3'b010: p_src_addr[7:0] <= mem_read;
-              3'b011: p_dst_addr[15:8] <= mem_read;
-              3'b100: p_dst_addr[7:0] <= mem_read;
-              3'b101: p_size[15:8] <= mem_read;
-              3'b110: p_size[7:0] <= mem_read;
-              3'b111: p_d_type[7:0] <= mem_read;
+              3'b000: p_src_addr[15:8] <= mem_read;
+              3'b001: p_src_addr[7:0] <= mem_read;
+              3'b010: p_dst_addr[15:8] <= mem_read;
+              3'b011: p_dst_addr[7:0] <= mem_read;
+              3'b100: p_size[15:8] <= mem_read;
+              3'b101: p_size[7:0] <= mem_read;
+              3'b110: p_d_type[7:0] <= mem_read;
             endcase
-            if (header_address_driver == 3'b111)
+            if (header_address_driver == 3'b110)
               header_reader_state <= HRW_DONE;
             else
               header_reader_state <= HRW_INC;
@@ -286,6 +292,60 @@ always @(posedge i_clk ) begin
      // end
   end
 end
+
+// reg   [7:0] mover_ref_addr;
+// reg   [7:0] mover_temp;
+// reg   [7:0] mover_end_addr;
+// reg         mover_complete
+// reg   [7:0] mover_address;
+// reg   [7:0] mover_write;
+// reg         mover_write_en;
+// reg   [4:0] mover_state;
+
+// assign @(posedge i_clk) begin
+//   if(i_rst) begin
+//     mover_state <= 0;
+//     mover_address <= 0;
+//     mover_write <= 0;
+//     mover_write_en <= 0;
+//     mover_complete <= 0;
+//   end else begin
+//     case (mover_state)
+//       0: begin
+//         mover_state <= 0;
+//         mover_address <= 0;
+//         mover_write <= 0;
+//         mover_write_en <= 0;
+//         if (mover_ref_addr != 0)
+//           mover_state <= 1;
+
+//       end
+//       1: begin
+//         mover_address <= mover_ref_addr + 1;
+//         mover_state <= 2;
+//       end
+//       2: begin
+//         mover_temp <= mem_read;
+//         mover_state <= 3;
+//       end
+//       3: begin
+//         mover_address <= mover_ref_addr;
+//         mover_write <= mover_temp;
+//         mover_state <= 4;
+//       end
+//       4: begin
+//         mover_write_en <= 1;
+//         mover_state <= 5;
+//       end
+//       5: begin
+//         mover_write_en <= 0;
+//         mover_write <= 0;
+//         mover_ref_addr <= mover_ref_addr + 1;
+//       end
+//       6: 
+//     endcase
+//   end
+// end
 
 // command processor
 reg         cp_force_address_request;
@@ -331,10 +391,11 @@ always @(posedge i_clk) begin
           header_reader_active <= 1;
       end
       CP_ACTI: begin
-        if (p_type[4])
+        if (p_type[4]) begin
           command_processor_state <= CP_DONE;
-        else
+        end else begin
           command_processor_state <= CP_LOAD;
+        end
       end
       CP_LOAD: begin
         if (data_set_complete) begin
@@ -447,7 +508,7 @@ always @(posedge i_clk) begin
         mem_write_enable_for_read <= 0;
         command_processor_active <= 0;
         eth_frame_len <= 0;
-        eth_frame_load_addr <= 8'hff;
+        eth_frame_load_addr <= 8'hfe;
         eth_frame_send_addr <= 0;
         eth_rec_dead_cnt <= 0;
         if (i_rready) begin // received frame's payload ready
@@ -577,7 +638,7 @@ always @(posedge i_clk) begin
           w_data <= 0;
         // eth_frame_load_addr <= eth_frame_load_addr + 1;
         // main_fsm_state <= WRITE_PORT_3;
-        if (eth_frame_load_addr == 8'h10) begin
+        if (eth_frame_load_addr == 8'h20) begin
           main_fsm_state <= IDLE;
         end else begin
           main_fsm_state <= WRITE_PORT_1;

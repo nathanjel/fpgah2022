@@ -162,6 +162,10 @@ initial begin
     // send ready ack
     // send ready ack
     // send ready ack
+    #20 i_eth_rdata <= 8'h0e;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
     #20 i_eth_rdata <= 8'h12;
     i_eth_rready <= 1;
     @(posedge o_eth_rreq);
@@ -213,6 +217,10 @@ initial begin
     // send ping
     // send ping
     // send ping
+    #20 i_eth_rdata <= 8'h0e;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
     #20 i_eth_rdata <= 8'h12;
     i_eth_rready <= 1;
     @(posedge o_eth_rreq);
@@ -269,6 +277,10 @@ initial begin
     // send echo
     // send echo
     // send echo
+    #20 i_eth_rdata <= 8'h0e;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
     #20 i_eth_rdata <= 8'h12;
     i_eth_rready <= 1;
     @(posedge o_eth_rreq);
