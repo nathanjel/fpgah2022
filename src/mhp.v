@@ -224,11 +224,12 @@ reg   [15:0]  p_size;
 reg   [7:0]   p_d_type;
 reg   [15:0]  p_scs;
 
-reg   [2:0] header_reader_state;
+reg   [3:0] header_reader_state;
 localparam HRW_INIT = 0;
 localparam HRW_ADDR = 1;
 localparam HRW_LOAD = 2;
-localparam HRW_DONE = 3;
+localparam HRW_INC = 3;
+localparam HRW_DONE = 4;
 wire  p_direction;
 wire  [6:0] p_type;
 
@@ -262,11 +263,14 @@ always @(posedge i_clk ) begin
               3'b101: p_size[7:0] <= mem_read;
               3'b110: p_d_type[7:0] <= mem_read;
             endcase
-            header_address_driver <= header_address_driver + 1;
             if (header_address_driver == 3'b110)
               header_reader_state <= HRW_DONE;
             else
-              header_reader_state <= HRW_ADDR;
+              header_reader_state <= HRW_INC;
+          end
+          HRW_INC: begin
+            header_address_driver <= header_address_driver + 1;
+            header_reader_state <= HRW_ADDR;
           end
           HRW_DONE: begin
             header_reader_state <= HRW_INIT;
@@ -431,6 +435,7 @@ always @(posedge i_clk) begin
     case (state)
       IDLE: begin
         w_valid <= 0;
+        mem_write_enable_for_read <= 0;
         command_processor_active <= 0;
         eth_frame_len <= 0;
         eth_frame_load_addr <= 0;
@@ -460,7 +465,7 @@ always @(posedge i_clk) begin
       //   end
       // end
       READ: begin
-        mem_write_enable_for_read <= 0;
+        mem_write_enable_for_read <= 1;
         mem_write_for_read <= i_rdata;
         // rr_uart_d <= i_rdata;
         // rr_uart_e <= 0;
@@ -470,7 +475,7 @@ always @(posedge i_clk) begin
       end
       READA: begin
         // rr_uart_e <= 1 & ~(eth_rec_dead_cnt[5] | eth_rec_dead_cnt[4] | eth_rec_dead_cnt[3] | eth_rec_dead_cnt[2] | eth_rec_dead_cnt[1] | eth_rec_dead_cnt[0]) ;
-        mem_write_enable_for_read <= 1;
+        mem_write_enable_for_read <= 0;
         if (i_rready) begin
           eth_frame_load_addr <= eth_frame_load_addr + 1;
           state <= READ;
@@ -485,7 +490,6 @@ always @(posedge i_clk) begin
         // rr_uart_e <= 0;
         // rr_uart_d <= 0;
         eth_frame_load_addr <= 0;
-        eth_frame_send_addr <= 0;
         eth_frame_len <= eth_frame_load_addr;
         mem_write_for_read <= 0;
         mem_write_enable_for_read <= 0;
@@ -534,7 +538,7 @@ always @(posedge i_clk) begin
         end
       end
       WAIT_FOR_TCHANGE: begin
-        if (eth_frame_send_addr != r_time[7:0]) begin // [29:20]) begin // [17:8]
+        if (eth_frame_send_addr == r_time[7:0]) begin // [29:20]) begin // [17:8]
           done <= 1;
           state <= PREPARE;
           cp_force_address_request <= 1;

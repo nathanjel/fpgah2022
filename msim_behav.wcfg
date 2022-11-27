@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
-      <ZoomEndTime time="89.450001 us"></ZoomEndTime>
-      <Cursor1Time time="72.610000 us"></Cursor1Time>
+      <ZoomStartTime time="61.500 ns"></ZoomStartTime>
+      <ZoomEndTime time="892.501 ns"></ZoomEndTime>
+      <Cursor1Time time="210.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="451"></NameColumnWidth>
+      <NameColumnWidth column_width="444"></NameColumnWidth>
       <ValueColumnWidth column_width="102"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="45" />
+   <WVObjectSize size="46" />
    <wave_markers>
       <marker time="400000000" label="" />
       <marker time="230000" label="" />
@@ -27,6 +27,7 @@
    <wvobject fp_name="group2400" type="group">
       <obj_property name="label">clocks</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/msim/clk_50" type="logic">
          <obj_property name="ElementShortName">clk_50</obj_property>
          <obj_property name="ObjectShortName">clk_50</obj_property>
@@ -150,17 +151,21 @@
       <obj_property name="ElementShortName">mem_read[7:0]</obj_property>
       <obj_property name="ObjectShortName">mem_read[7:0]</obj_property>
    </wvobject>
+   <wvobject fp_name="/msim/dcontrol/task_manager/protocol/record_ram/ram_name" type="array">
+      <obj_property name="ElementShortName">ram_name[255:0][7:0]</obj_property>
+      <obj_property name="ObjectShortName">ram_name[255:0][7:0]</obj_property>
+   </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/mem_write_enable" type="logic">
       <obj_property name="ElementShortName">mem_write_enable</obj_property>
       <obj_property name="ObjectShortName">mem_write_enable</obj_property>
    </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/header_reader_state" type="array">
-      <obj_property name="ElementShortName">header_reader_state[2:0]</obj_property>
-      <obj_property name="ObjectShortName">header_reader_state[2:0]</obj_property>
+      <obj_property name="ElementShortName">header_reader_state[3:0]</obj_property>
+      <obj_property name="ObjectShortName">header_reader_state[3:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/command_processor_state" type="array">
-      <obj_property name="ElementShortName">command_processor_state[3:0]</obj_property>
-      <obj_property name="ObjectShortName">command_processor_state[3:0]</obj_property>
+      <obj_property name="ElementShortName">command_processor_state[4:0]</obj_property>
+      <obj_property name="ObjectShortName">command_processor_state[4:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/msim/dcontrol/task_manager/protocol/p_dst_addr" type="array">
       <obj_property name="ElementShortName">p_dst_addr[15:0]</obj_property>
