@@ -386,9 +386,21 @@ end
 // end
 
 reg [3:0] calculator_state;
+reg [7:0] fib_n;
+reg [15:0] fib_pp; 
+reg [15:0] fib_p;
+reg [15:0] fib_c;
+wire fib_complete;
+
+assign fib_complete = (fib_n == 8'hff && calculator_state == 4);
+
 always @(posedge i_clk) begin
   if(i_rst) begin
     calculator_state <= 0;
+    fib_n <= 0;
+    fib_c <= 0;
+    fib_pp <= 0;
+    fib_p <= 0;
   end else begin
     case(calculator_state)
       0: begin
@@ -401,6 +413,53 @@ always @(posedge i_clk) begin
         if (p_operand == 8'h30) begin
           p_calc_output <= p_para1 * p_para2;
         end
+        if (p_operand == 8'h60) begin
+          calculator_state <= 1;
+        end
+      end
+      1: begin
+        fib_pp <= 16'h0000;
+        fib_p <= 16'h0001;
+        fib_c <= 16'h0001;
+        fib_n <= p_para1[15:8];
+        calculator_state <= 2;
+      end
+      2: begin
+        if (fib_n == 8'h00) begin
+          p_calc_output <= fib_pp;
+        end else begin 
+          if (fib_n == 8'h01) begin
+            p_calc_output <= fib_p;
+          end else begin 
+            if (fib_n == 8'h02) begin 
+              p_calc_output <= fib_c;
+            end
+          end
+        end
+        calculator_state <= 3;
+      end
+      3: begin
+        fib_n <= fib_n - 1;
+        calculator_state <= 4;
+      end
+      4: begin
+        if (fib_n == 8'hfe) begin
+          calculator_state <= 0;
+        end else begin
+          calculator_state <= 5;
+        end;
+      end
+      5: begin
+        fib_pp <= fib_p;
+        calculator_state <= 6;
+      end
+      6: begin
+        fib_p <= fib_c;
+        calculator_state <= 7;
+      end
+      7: begin
+        fib_c <= fib_p + fib_pp;
+        calculator_state <= 2;
       end
     endcase 
   end
@@ -455,7 +514,11 @@ always @(posedge i_clk) begin
           if (p_type == 7'h0d) begin
             command_processor_state <= CP_LOAD;            
           end else begin
-            command_processor_state <= CP_LOAD;
+            if (p_type[3:0] == 4'h0d & p_operand == 8'h60) begin
+              command_processor_state <= (fib_complete & mem_writes_counter) ? CP_ACTI : CP_LOAD; 
+            end else begin
+              command_processor_state <= CP_LOAD;
+            end
           end
         end
       end

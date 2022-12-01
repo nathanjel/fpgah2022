@@ -540,6 +540,63 @@ initial begin
     i_eth_rready <= 0;
 #30000 i_eth_rready <= 0;
 
+
+// send calc fib
+    // send calc
+    // send calc
+    // send calc
+    // send calc
+    // send calc
+    #20 i_eth_rdata <= 8'h0e;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h12;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h34;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'hab;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'hcd;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h00;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h02;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h0d;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h60;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'h05;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'hcc;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+    #20 i_eth_rdata <= 8'hcc;
+    i_eth_rready <= 1;
+    @(posedge o_eth_rreq);
+    i_eth_rready <= 0;
+#30000 i_eth_rready <= 0;
+
 end
 
 
